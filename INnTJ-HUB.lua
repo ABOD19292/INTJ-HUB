@@ -1,18 +1,17 @@
 -- // ================================================================= //
--- //                   INTJ-HUB : ABOOD GOD-MODE V10                   //
--- //            ULTIMATE LUAU ENGINE & CUSTOM IPHONE THEME             //
+-- //                INTJ-HUB : ABOOD GOD-MODE FINAL V13               //
+-- //               FIXED SEMICOLON COMMANDS & ELEGANT UI              //
 -- // ================================================================= //
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 local TextChatService = game:GetService("TextChatService")
 
--- // Safe ScreenGui Container
+-- // Container Creation
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AboodGodModeHUB"
+ScreenGui.Name = "AboodGodModeHUB_V13"
 ScreenGui.ResetOnSpawn = false
 
 if syn and syn.protect_gui then
@@ -41,84 +40,76 @@ NotifCorner.CornerRadius = UDim.new(0, 12)
 
 local NotifStroke = Instance.new("UIStroke", StaticNotif)
 NotifStroke.Color = Color3.fromRGB(230, 25, 45)
-NotifStroke.Thickness = 2.5
+NotifStroke.Thickness = 2
 
 local NotifText = Instance.new("TextLabel")
 NotifText.Size = UDim2.new(1, 0, 1, 0)
 NotifText.BackgroundTransparency = 1
 NotifText.Text = "تم تشغيل سكربت عبود 🤩"
 NotifText.TextColor3 = Color3.fromRGB(255, 255, 255)
-NotifText.TextSize = 18
-NotifText.Font = Enum.Font.SourceSansBold
+NotifText.TextSize = 17
+NotifText.Font = Enum.Font.GothamBold
 NotifText.Parent = StaticNotif
 
--- // --- 2. محرك الشات الخارق والتخطي الذكي --- //
-local function SuperBypassChat(msg)
-    local success = false
-    
-    -- المسار الأول: البحث المباشر في ريموتات الماب
+-- // --- 2. محركات الشات (علني للنسخ / مخفي للحماية) --- //
+
+-- أ) محرك إرسال علني للنسخ والـ Spam
+local function PublicSendChat(msg)
+    pcall(function()
+        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+            local mainChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral") or TextChatService.TextChannels:FindFirstChild("All")
+            if mainChannel then mainChannel:SendAsync(msg) end
+        else
+            local chatEvents = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+            if chatEvents and chatEvents:FindFirstChild("SayMessageRequest") then
+                chatEvents.SayMessageRequest:FireServer(msg, "All")
+            end
+        end
+    end)
+end
+
+-- ب) محرك إرسال مخفي للحماية فقط
+local function SilentSendProtect(msg)
     pcall(function()
         for _, remote in ipairs(ReplicatedStorage:GetDescendants()) do
             if remote:IsA("RemoteEvent") then
                 local lowName = string.lower(remote.Name)
                 if lowName:find("chat") or lowName:find("say") or lowName:find("msg") or lowName:find("command") then
                     remote:FireServer(msg, "All")
-                    success = true
                 end
             end
         end
     end)
-    if success then return end
-
-    -- المسار الثاني: TextChatService الحديث
-    pcall(function()
-        if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            local mainChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral") or TextChatService.TextChannels:FindFirstChild("All")
-            if mainChannel then
-                mainChannel:SendAsync(msg)
-                success = true
-            end
-        end
-    end)
-    if success then return end
-
-    -- المسار الثالث: SayMessageRequest الأفتراضي
-    pcall(function()
-        local chatEvents = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
-        if chatEvents and chatEvents:FindFirstChild("SayMessageRequest") then
-            chatEvents.SayMessageRequest:FireServer(msg, "All")
-        end
-    end)
 end
 
--- // --- 3. الواجهة الرئيسية (iPhone Curved Crimson Theme) --- //
+-- // --- 3. الواجهة الرئيسية بالتصميم العربي الأنيق --- //
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 530, 0, 365)
-MainFrame.Position = UDim2.new(0.5, -265, 0.5, -182)
-MainFrame.BackgroundColor3 = Color3.fromRGB(14, 14, 18)
+MainFrame.Size = UDim2.new(0, 520, 0, 370)
+MainFrame.Position = UDim2.new(0.5, -260, 0.5, -185)
+MainFrame.BackgroundColor3 = Color3.fromRGB(16, 16, 20)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Parent = ScreenGui
 
 local MainCorner = Instance.new("UICorner", MainFrame)
-MainCorner.CornerRadius = UDim.new(0, 18)
+MainCorner.CornerRadius = UDim.new(0, 16)
 
 local MainStroke = Instance.new("UIStroke", MainFrame)
-MainStroke.Color = Color3.fromRGB(180, 15, 30)
+MainStroke.Color = Color3.fromRGB(190, 20, 35)
 MainStroke.Thickness = 2.5
 
--- زر السهم الأحمر
+-- زر السهم للفتح والإغلاق
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Name = "ToggleArrow"
-ToggleBtn.Size = UDim2.new(0, 36, 0, 36)
-ToggleBtn.Position = UDim2.new(1, -45, 0.5, -18)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(160, 15, 30)
+ToggleBtn.Size = UDim2.new(0, 38, 0, 38)
+ToggleBtn.Position = UDim2.new(1, -48, 0.5, -19)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(170, 18, 32)
 ToggleBtn.Text = "◄"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.TextSize = 20
-ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.TextSize = 18
+ToggleBtn.Font = Enum.Font.GothamBold
 ToggleBtn.Parent = ScreenGui
 
 local ArrowCorner = Instance.new("UICorner", ToggleBtn)
@@ -131,27 +122,27 @@ end)
 
 -- العنوان
 local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Size = UDim2.new(1, -30, 0, 30)
+TitleLabel.Size = UDim2.new(1, -30, 0, 32)
 TitleLabel.Position = UDim2.new(0, 15, 0, 10)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Text = "INTJ-HUB | عبود الهيبة 👑"
 TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleLabel.Font = Enum.Font.SourceSansBold
-TitleLabel.TextSize = 17
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.TextSize = 16
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.Parent = MainFrame
 
 -- حاوية المحتوى
 local Container = Instance.new("Frame")
-Container.Size = UDim2.new(1, -24, 1, -85)
-Container.Position = UDim2.new(0, 12, 0, 75)
+Container.Size = UDim2.new(1, -24, 1, -90)
+Container.Position = UDim2.new(0, 12, 0, 80)
 Container.BackgroundTransparency = 1
 Container.Parent = MainFrame
 
 -- // --- 4. نظام التبويبات الأربعة --- //
 local NavFrame = Instance.new("Frame")
-NavFrame.Size = UDim2.new(1, -24, 0, 35)
-NavFrame.Position = UDim2.new(0, 12, 0, 38)
+NavFrame.Size = UDim2.new(1, -24, 0, 36)
+NavFrame.Position = UDim2.new(0, 12, 0, 40)
 NavFrame.BackgroundTransparency = 1
 NavFrame.Parent = MainFrame
 
@@ -167,11 +158,11 @@ local ActiveTabBtn = nil
 for i, tabName in ipairs(Tabs) do
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0.235, 0, 1, 0)
-    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
+    btn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
     btn.Text = tabName
-    btn.TextColor3 = Color3.fromRGB(180, 180, 180)
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 14
+    btn.TextColor3 = Color3.fromRGB(190, 190, 190)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 13
     btn.Parent = NavFrame
 
     local btnCorner = Instance.new("UICorner", btn)
@@ -186,32 +177,32 @@ for i, tabName in ipairs(Tabs) do
 
     btn.MouseButton1Click:Connect(function()
         if ActiveTabBtn then
-            ActiveTabBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
-            ActiveTabBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+            ActiveTabBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
+            ActiveTabBtn.TextColor3 = Color3.fromRGB(190, 190, 190)
             TabPages[ActiveTabBtn.Text].Visible = false
         end
         ActiveTabBtn = btn
-        btn.BackgroundColor3 = Color3.fromRGB(170, 15, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(180, 18, 32)
         btn.TextColor3 = Color3.fromRGB(255, 255, 255)
         page.Visible = true
     end)
 
     if i == 1 then
         ActiveTabBtn = btn
-        btn.BackgroundColor3 = Color3.fromRGB(170, 15, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(180, 18, 32)
         btn.TextColor3 = Color3.fromRGB(255, 255, 255)
         page.Visible = true
     end
 end
 
 -- =================================================================
--- 1. TAB: نسخ (نظام التحديد والتكرار التلقائي المستمر)
+-- 1. TAB: نسخ (أوامر علنية + تشغيل تلقائي مستمر مع ;)
 -- =================================================================
 local CopyPage = TabPages["نسخ"]
 
 local PlayerScroll = Instance.new("ScrollingFrame")
 PlayerScroll.Size = UDim2.new(0.62, 0, 0, 150)
-PlayerScroll.BackgroundColor3 = Color3.fromRGB(22, 22, 26)
+PlayerScroll.BackgroundColor3 = Color3.fromRGB(22, 22, 28)
 PlayerScroll.BorderSizePixel = 0
 PlayerScroll.ScrollBarThickness = 4
 PlayerScroll.Parent = CopyPage
@@ -229,10 +220,10 @@ local function RefreshList()
     for _, plr in ipairs(Players:GetPlayers()) do
         local pBtn = Instance.new("TextButton")
         pBtn.Text = plr.DisplayName
-        pBtn.BackgroundColor3 = SelectedPlayers[plr.Name] and Color3.fromRGB(180, 20, 35) or Color3.fromRGB(35, 35, 42)
+        pBtn.BackgroundColor3 = SelectedPlayers[plr.Name] and Color3.fromRGB(190, 20, 35) or Color3.fromRGB(34, 34, 42)
         pBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        pBtn.Font = Enum.Font.SourceSans
-        pBtn.TextSize = 13
+        pBtn.Font = Enum.Font.GothamBold
+        pBtn.TextSize = 12
         pBtn.Parent = PlayerScroll
         
         local c = Instance.new("UICorner", pBtn) c.CornerRadius = UDim.new(0, 6)
@@ -240,10 +231,10 @@ local function RefreshList()
         pBtn.MouseButton1Click:Connect(function()
             if SelectedPlayers[plr.Name] then
                 SelectedPlayers[plr.Name] = nil
-                pBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 42)
+                pBtn.BackgroundColor3 = Color3.fromRGB(34, 34, 42)
             else
                 SelectedPlayers[plr.Name] = true
-                pBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 35)
+                pBtn.BackgroundColor3 = Color3.fromRGB(190, 20, 35)
             end
         end)
     end
@@ -258,20 +249,22 @@ CmdBox.Position = UDim2.new(0.65, 0, 0, 0)
 CmdBox.PlaceholderText = "أدخل الأوامر..."
 CmdBox.Text = ";jail %plr"
 CmdBox.MultiLine = true
-CmdBox.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+CmdBox.Font = Enum.Font.GothamBold
+CmdBox.TextSize = 13
+CmdBox.BackgroundColor3 = Color3.fromRGB(24, 24, 30)
 CmdBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 CmdBox.Parent = CopyPage
 local cbc = Instance.new("UICorner", CmdBox) cbc.CornerRadius = UDim.new(0,6)
 
--- زر التشغيل المستمر (تلقائي بدون توقف)
+-- زر التكرار التلقائي المستمر للنسخ
 local CopyLoopBtn = Instance.new("TextButton")
-CopyLoopBtn.Size = UDim2.new(1, 0, 0, 40)
-CopyLoopBtn.Position = UDim2.new(0, 0, 1, -40)
+CopyLoopBtn.Size = UDim2.new(1, 0, 0, 42)
+CopyLoopBtn.Position = UDim2.new(0, 0, 1, -42)
 CopyLoopBtn.Text = "تشغيل النسخ والـ Spam تلقائياً (متوقف) 🛑"
-CopyLoopBtn.BackgroundColor3 = Color3.fromRGB(140, 15, 25)
+CopyLoopBtn.BackgroundColor3 = Color3.fromRGB(150, 15, 25)
 CopyLoopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CopyLoopBtn.Font = Enum.Font.SourceSansBold
-CopyLoopBtn.TextSize = 15
+CopyLoopBtn.Font = Enum.Font.GothamBold
+CopyLoopBtn.TextSize = 14
 CopyLoopBtn.Parent = CopyPage
 local clc = Instance.new("UICorner", CopyLoopBtn) clc.CornerRadius = UDim.new(0,8)
 
@@ -281,41 +274,41 @@ local CopyThread = nil
 CopyLoopBtn.MouseButton1Click:Connect(function()
     CopyActive = not CopyActive
     if CopyActive then
-        CopyLoopBtn.Text = "النسخ والـ Spam شغال تلقائياً بدون توقف! 🔥"
-        CopyLoopBtn.BackgroundColor3 = Color3.fromRGB(20, 160, 60)
+        CopyLoopBtn.Text = "النسخ شغال علنياً وبدون توقف! 🔥"
+        CopyLoopBtn.BackgroundColor3 = Color3.fromRGB(25, 150, 60)
         CopyThread = task.spawn(function()
             while CopyActive do
                 local rawCmd = CmdBox.Text
                 for plrName, active in pairs(SelectedPlayers) do
                     if active and CopyActive then
                         local finalCmd = string.gsub(rawCmd, "%%plr", plrName)
-                        SuperBypassChat(finalCmd)
-                        task.wait(0.08)
+                        PublicSendChat(finalCmd)
+                        task.wait(0.12)
                     end
                 end
-                task.wait(0.15)
+                task.wait(0.2)
             end
         end)
     else
         if CopyThread then task.cancel(CopyThread) end
         CopyLoopBtn.Text = "تشغيل النسخ والـ Spam تلقائياً (متوقف) 🛑"
-        CopyLoopBtn.BackgroundColor3 = Color3.fromRGB(140, 15, 25)
+        CopyLoopBtn.BackgroundColor3 = Color3.fromRGB(150, 15, 25)
     end
 end)
 
 -- =================================================================
--- 2. TAB: حماية (تلقائية مستمرة)
+-- 2. TAB: حماية (أوامر مخفية ;unjc و ;unice)
 -- =================================================================
 local ProtectPage = TabPages["حماية"]
 
 local ProtectBtn = Instance.new("TextButton")
 ProtectBtn.Size = UDim2.new(1, 0, 0, 50)
 ProtectBtn.Position = UDim2.new(0, 0, 0, 20)
-ProtectBtn.Text = "تفعيل حماية الـ Spam الخارقة (/unjc /unice) 🛡️"
-ProtectBtn.BackgroundColor3 = Color3.fromRGB(140, 15, 25)
+ProtectBtn.Text = "تفعيل حماية الـ Spam الخارقة (;unjc ;unice) 🛡️"
+ProtectBtn.BackgroundColor3 = Color3.fromRGB(150, 15, 25)
 ProtectBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ProtectBtn.Font = Enum.Font.SourceSansBold
-ProtectBtn.TextSize = 16
+ProtectBtn.Font = Enum.Font.GothamBold
+ProtectBtn.TextSize = 15
 ProtectBtn.Parent = ProtectPage
 local pbc = Instance.new("UICorner", ProtectBtn) pbc.CornerRadius = UDim.new(0,10)
 
@@ -325,25 +318,25 @@ local ProtectThread = nil
 ProtectBtn.MouseButton1Click:Connect(function()
     Protecting = not Protecting
     if Protecting then
-        ProtectBtn.Text = "الحماية مفعلة وتعمل بأقصى سرعة تلقائياً! ⚡"
-        ProtectBtn.BackgroundColor3 = Color3.fromRGB(20, 160, 60)
+        ProtectBtn.Text = "الحماية المخفية تعمل بأقصى سرعة! ⚡"
+        ProtectBtn.BackgroundColor3 = Color3.fromRGB(25, 150, 60)
         ProtectThread = task.spawn(function()
             while Protecting do
-                SuperBypassChat("/unjc")
-                task.wait(0.04)
-                SuperBypassChat("/unice")
-                task.wait(0.04)
+                SilentSendProtect(";unjc")
+                task.wait(0.05)
+                SilentSendProtect(";unice")
+                task.wait(0.05)
             end
         end)
     else
         if ProtectThread then task.cancel(ProtectThread) end
-        ProtectBtn.Text = "تفعيل حماية الـ Spam الخارقة (/unjc /unice) 🛡️"
-        ProtectBtn.BackgroundColor3 = Color3.fromRGB(140, 15, 25)
+        ProtectBtn.Text = "تفعيل حماية الـ Spam الخارقة (;unjc ;unice) 🛡️"
+        ProtectBtn.BackgroundColor3 = Color3.fromRGB(150, 15, 25)
     end
 end)
 
 -- =================================================================
--- 3. TAB: تجهيز نسخ (Command Text Replacer)
+-- 3. TAB: تجهيز نسخ (المستبدل السريع مع ;)
 -- =================================================================
 local PrepPage = TabPages["تجهيز نسخ"]
 
@@ -355,6 +348,8 @@ SourceBox.Position = UDim2.new(0, 0, 0, 0)
 SourceBox.Text = OldCommandsText
 SourceBox.MultiLine = true
 SourceBox.ClearTextOnFocus = false
+SourceBox.Font = Enum.Font.GothamBold
+SourceBox.TextSize = 11
 SourceBox.BackgroundColor3 = Color3.fromRGB(24, 24, 28)
 SourceBox.TextColor3 = Color3.fromRGB(200, 200, 200)
 SourceBox.TextWrapped = true
@@ -365,6 +360,7 @@ local OldTarget = Instance.new("TextBox")
 OldTarget.Size = UDim2.new(0.48, 0, 0, 32)
 OldTarget.Position = UDim2.new(0, 0, 0, 72)
 OldTarget.Text = "Svr"
+OldTarget.Font = Enum.Font.GothamBold
 OldTarget.PlaceholderText = "الاسم القديم"
 OldTarget.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
 OldTarget.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -375,6 +371,7 @@ local NewTarget = Instance.new("TextBox")
 NewTarget.Size = UDim2.new(0.48, 0, 0, 32)
 NewTarget.Position = UDim2.new(0.52, 0, 0, 72)
 NewTarget.Text = "Mohammed"
+NewTarget.Font = Enum.Font.GothamBold
 NewTarget.PlaceholderText = "الاسم الجديد"
 NewTarget.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
 NewTarget.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -387,6 +384,8 @@ OutputBox.Position = UDim2.new(0, 0, 0, 110)
 OutputBox.Text = ""
 OutputBox.PlaceholderText = "النسخ الجديد يظهر هنا..."
 OutputBox.MultiLine = true
+OutputBox.Font = Enum.Font.GothamBold
+OutputBox.TextSize = 11
 OutputBox.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 OutputBox.TextColor3 = Color3.fromRGB(0, 255, 150)
 OutputBox.TextWrapped = true
@@ -397,9 +396,9 @@ local ConvertBtn = Instance.new("TextButton")
 ConvertBtn.Size = UDim2.new(1, 0, 0, 35)
 ConvertBtn.Position = UDim2.new(0, 0, 0, 182)
 ConvertBtn.Text = "تحديث ونسخ النص فوراً ⚡"
-ConvertBtn.BackgroundColor3 = Color3.fromRGB(170, 15, 30)
+ConvertBtn.BackgroundColor3 = Color3.fromRGB(180, 18, 32)
 ConvertBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ConvertBtn.Font = Enum.Font.SourceSansBold
+ConvertBtn.Font = Enum.Font.GothamBold
 ConvertBtn.Parent = PrepPage
 local cbtc = Instance.new("UICorner", ConvertBtn) cbtc.CornerRadius = UDim.new(0,6)
 
@@ -431,9 +430,10 @@ ExtraGrid.CellPadding = UDim2.new(0.04, 0, 0, 10)
 local function AddExtraScript(name, code)
     local btn = Instance.new("TextButton")
     btn.Text = name
-    btn.BackgroundColor3 = Color3.fromRGB(35, 35, 45)
+    btn.BackgroundColor3 = Color3.fromRGB(34, 34, 44)
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.SourceSansBold
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 13
     btn.Parent = ExtraPage
     local c = Instance.new("UICorner", btn) c.CornerRadius = UDim.new(0,8)
     btn.MouseButton1Click:Connect(function()
