@@ -1,22 +1,27 @@
--- [[ 🔴 AFK&ARB V4 - SMART CHAT TARGETING 🔴 ]] --
+-- [[ 🔴 AFK&ARB V5 - VIP EDITION 🔴 ]] --
+
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local LocalPlayer = Players.LocalPlayer
 
--- [[ 1. صائد الريموتات الذكي (تجاهل شات روبلوكس العادي) ]] --
-local DetectedRemotes = {}
+-- [[ 1. نظام الحماية (Whitelist) ]] --
+local WhitelistedPlayers = {
+    ["azozh1500111"] = true,
+    ["yassin_3mk033"] = true
+}
 
+if not WhitelistedPlayers[LocalPlayer.Name] then
+    LocalPlayer:Kick("⛔ عذراً! هذا السكربت خاص ومصرح فقط لـ azozh1500111 و yassin_3mk033")
+    return
+end
+
+-- [[ 2. صائد الريموتات الذكي ]] --
+local DetectedRemotes = {}
 local function ScanForRemotes()
     table.clear(DetectedRemotes)
-    local scanAreas = {
-        game:GetService("ReplicatedStorage"),
-        LocalPlayer.Backpack,
-        LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-    }
-    
+    local scanAreas = { game:GetService("ReplicatedStorage"), LocalPlayer.Backpack, LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait() }
     for _, area in ipairs(scanAreas) do
         for _, obj in pairs(area:GetDescendants()) do
-            -- نبحث عن الريموتات ونستثني مجلد شات روبلوكس الأساسي
             if obj:IsA("RemoteEvent") then
                 local isDefaultChat = false
                 pcall(function()
@@ -24,7 +29,6 @@ local function ScanForRemotes()
                         isDefaultChat = true
                     end
                 end)
-                
                 if not isDefaultChat then
                     table.insert(DetectedRemotes, obj)
                 end
@@ -33,29 +37,31 @@ local function ScanForRemotes()
     end
 end
 
--- [[ 2. تصميم الواجهة ]] --
+-- [[ 3. إعدادات الواجهة (GUI) ]] --
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AFK_ARB"
+ScreenGui.Name = "AFK_ARB_VIP"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
--- زر الفتح (مكبر لراحة اللمس)
+-- زر الفتح
 local OpenBtn = Instance.new("TextButton")
-OpenBtn.Size = UDim2.new(0, 70, 0, 70)
+OpenBtn.Size = UDim2.new(0, 60, 0, 60)
 OpenBtn.Position = UDim2.new(0, 20, 0, 20)
 OpenBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-OpenBtn.Text = "🔥"
-OpenBtn.TextSize = 30
+OpenBtn.Text = "AFK"
+OpenBtn.TextColor3 = Color3.fromRGB(255, 0, 0)
+OpenBtn.Font = Enum.Font.GothamBold
+OpenBtn.TextSize = 20
 OpenBtn.Parent = ScreenGui
 Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(1, 0)
 Instance.new("UIStroke", OpenBtn).Color = Color3.fromRGB(255, 0, 0)
 Instance.new("UIStroke", OpenBtn).Thickness = 2.5
 
--- الإطار الرئيسي 
+-- الإطار الرئيسي
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 600, 0, 350)
-MainFrame.Position = UDim2.new(0.5, -300, 0.5, -175)
-MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+MainFrame.Size = UDim2.new(0, 700, 0, 480)
+MainFrame.Position = UDim2.new(0.5, -350, 0.5, -240)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Visible = false
@@ -64,73 +70,108 @@ Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 15)
 Instance.new("UIStroke", MainFrame).Color = Color3.fromRGB(200, 0, 0)
 Instance.new("UIStroke", MainFrame).Thickness = 3
 
-OpenBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = not MainFrame.Visible
+OpenBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
+
+-- [[ 4. الحركة الجمالية (الهيدر والصور) ]] --
+local HeaderFrame = Instance.new("Frame")
+HeaderFrame.Size = UDim2.new(1, 0, 0, 100)
+HeaderFrame.BackgroundTransparency = 1
+HeaderFrame.Parent = MainFrame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "AFK&ARB"
+Title.TextColor3 = Color3.fromRGB(255, 0, 0)
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 45
+Title.Parent = HeaderFrame
+
+local LeftAvatar = Instance.new("ImageLabel")
+LeftAvatar.Size = UDim2.new(0, 90, 0, 90)
+LeftAvatar.Position = UDim2.new(0, 15, 0, 5)
+LeftAvatar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+LeftAvatar.Parent = HeaderFrame
+Instance.new("UICorner", LeftAvatar).CornerRadius = UDim.new(1, 0)
+
+local RightAvatar = Instance.new("ImageLabel")
+RightAvatar.Size = UDim2.new(0, 90, 0, 90)
+RightAvatar.Position = UDim2.new(1, -105, 0, 5)
+RightAvatar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+RightAvatar.Parent = HeaderFrame
+Instance.new("UICorner", RightAvatar).CornerRadius = UDim.new(1, 0)
+
+-- جلب صور اللاعبين مباشرة من روبلوكس
+task.spawn(function()
+    pcall(function()
+        local id1 = Players:GetUserIdFromNameAsync("azozh1500111")
+        LeftAvatar.Image = Players:GetUserThumbnailAsync(id1, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
+    end)
+    pcall(function()
+        local id2 = Players:GetUserIdFromNameAsync("yassin_3mk033")
+        RightAvatar.Image = Players:GetUserThumbnailAsync(id2, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
+    end)
 end)
 
--- العنوان
-local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, 0, 0, 45)
-Title.BackgroundTransparency = 1
-Title.Text = "🩸 AFK&ARB - SMART CHAT DESTROYER 🩸"
-Title.TextColor3 = Color3.fromRGB(255, 20, 20)
-Title.Font = Enum.Font.GothamBlack
-Title.TextSize = 19
-Title.Parent = MainFrame
-
 local Divider = Instance.new("Frame")
-Divider.Size = UDim2.new(1, 0, 0, 2)
-Divider.Position = UDim2.new(0, 0, 0, 45)
+Divider.Size = UDim2.new(1, 0, 0, 3)
+Divider.Position = UDim2.new(0, 0, 0, 105)
 Divider.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 Divider.BorderSizePixel = 0
 Divider.Parent = MainFrame
 
--- [[ 3. نظام اختيار اللاعبين ]] --
+-- [[ 5. المتغيرات والأوامر ]] --
 local selectedPlayer = LocalPlayer.Name
+local selectedMode = nil -- يحفظ الاختيار (مشرف أو هيد ادمن)
+local isSending = false
 
+local Commands = {
+    Mod = "@cmdbar [TARGET] @logs [TARGET] @re [TARGET] @kill [TARGET] @nv [TARGET] @ice [TARGET] @jc [TARGET] @paint [TARGET] @worm [TARGET] @char [TARGET] c7v @tp [TARGET]",
+    AdminMystery = "?EXPLODE [TARGET] ?WARP [TARGET] ?JAIL [TARGET] ?ICE [TARGET] ?LOOPWARF [TARGET] ?LOGS [TARGET] ?CLOGS [TARGET] ?CHATLOGS [TARGET] ?NV [TARGET] ?CMDBAR [TARGET] ?CHAR [TARGET] MIR' ?ALERT [TARGET] ?AURA [TARGET] ?EXPLODE"
+}
+
+-- [[ 6. اختيار اللاعبين (اليمين) ]] --
 local PlayerFrame = Instance.new("Frame")
-PlayerFrame.Size = UDim2.new(0, 320, 0, 270)
-PlayerFrame.Position = UDim2.new(0, 260, 0, 60)
+PlayerFrame.Size = UDim2.new(0, 300, 0, 240)
+PlayerFrame.Position = UDim2.new(1, -320, 0, 120)
 PlayerFrame.BackgroundTransparency = 1
 PlayerFrame.Parent = MainFrame
 
 local TargetLabel = Instance.new("TextLabel")
-TargetLabel.Size = UDim2.new(1, 0, 0, 35)
+TargetLabel.Size = UDim2.new(1, 0, 0, 30)
 TargetLabel.BackgroundTransparency = 1
-TargetLabel.Text = "اللاعب المستهدف: " .. selectedPlayer
+TargetLabel.Text = "اللاعب المحدد: " .. selectedPlayer
 TargetLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TargetLabel.Font = Enum.Font.GothamBold
 TargetLabel.TextSize = 16
 TargetLabel.Parent = PlayerFrame
 
 local PlayerScroll = Instance.new("ScrollingFrame")
-PlayerScroll.Size = UDim2.new(1, 0, 1, -45)
-PlayerScroll.Position = UDim2.new(0, 0, 0, 45)
-PlayerScroll.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+PlayerScroll.Size = UDim2.new(1, 0, 1, -40)
+PlayerScroll.Position = UDim2.new(0, 0, 0, 40)
+PlayerScroll.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 PlayerScroll.ScrollBarThickness = 8
 PlayerScroll.Parent = PlayerFrame
 Instance.new("UICorner", PlayerScroll).CornerRadius = UDim.new(0, 8)
 local PListLayout = Instance.new("UIListLayout", PlayerScroll)
-PListLayout.Padding = UDim.new(0, 8)
+PListLayout.Padding = UDim.new(0, 5)
 
 local function RefreshPlayers()
-    for _, v in pairs(PlayerScroll:GetChildren()) do
-        if v:IsA("TextButton") then v:Destroy() end
-    end
+    for _, v in pairs(PlayerScroll:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
     for _, p in pairs(Players:GetPlayers()) do
         local btn = Instance.new("TextButton")
         btn.Size = UDim2.new(1, -12, 0, 40)
-        btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
         btn.Text = "🎯 " .. p.Name
         btn.TextColor3 = Color3.fromRGB(200, 200, 200)
         btn.Font = Enum.Font.GothamBold
-        btn.TextSize = 16
+        btn.TextSize = 15
         btn.Parent = PlayerScroll
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
         
         btn.MouseButton1Click:Connect(function()
             selectedPlayer = p.Name
-            TargetLabel.Text = "اللاعب المستهدف: " .. p.Name
+            TargetLabel.Text = "اللاعب المحدد: " .. p.Name
         end)
     end
 end
@@ -138,49 +179,99 @@ RefreshPlayers()
 Players.PlayerAdded:Connect(RefreshPlayers)
 Players.PlayerRemoving:Connect(RefreshPlayers)
 
--- [[ 4. الأزرار (القائمة الجانبية) ]] --
-local Sidebar = Instance.new("Frame")
-Sidebar.Size = UDim2.new(0, 220, 1, -60)
-Sidebar.Position = UDim2.new(0, 15, 0, 60)
-Sidebar.BackgroundTransparency = 1
-Sidebar.Parent = MainFrame
-local SideLayout = Instance.new("UIListLayout", Sidebar)
-SideLayout.Padding = UDim.new(0, 15)
+-- [[ 7. اختيار نوع النسخ (اليسار) ]] --
+local ModesFrame = Instance.new("Frame")
+ModesFrame.Size = UDim2.new(0, 320, 0, 200)
+ModesFrame.Position = UDim2.new(0, 20, 0, 140)
+ModesFrame.BackgroundTransparency = 1
+ModesFrame.Parent = MainFrame
 
-local function CreateButton(text, color)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 50)
-    btn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    btn.Text = text
-    btn.TextColor3 = color
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 18
-    btn.Parent = Sidebar
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-    Instance.new("UIStroke", btn).Color = color
-    return btn
+local ModeTitle = Instance.new("TextLabel")
+ModeTitle.Size = UDim2.new(1, 0, 0, 30)
+ModeTitle.BackgroundTransparency = 1
+ModeTitle.Text = "اختر نوع النسخ:"
+ModeTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+ModeTitle.Font = Enum.Font.GothamBold
+ModeTitle.TextSize = 18
+ModeTitle.Parent = ModesFrame
+
+local ModBtn = Instance.new("TextButton")
+ModBtn.Size = UDim2.new(1, 0, 0, 50)
+ModBtn.Position = UDim2.new(0, 0, 0, 50)
+ModBtn.BackgroundColor3 = Color3.fromRGB(40, 15, 15)
+ModBtn.Text = "نسخ مشرف 👑"
+ModBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
+ModBtn.Font = Enum.Font.GothamBold
+ModBtn.TextSize = 18
+ModBtn.Parent = ModesFrame
+Instance.new("UICorner", ModBtn).CornerRadius = UDim.new(0, 8)
+local ModStroke = Instance.new("UIStroke", ModBtn)
+ModStroke.Color = Color3.fromRGB(255, 0, 0)
+
+local AdminBtn = Instance.new("TextButton")
+AdminBtn.Size = UDim2.new(1, 0, 0, 50)
+AdminBtn.Position = UDim2.new(0, 0, 0, 115)
+AdminBtn.BackgroundColor3 = Color3.fromRGB(40, 15, 15)
+AdminBtn.Text = "نسخ هيد ادمن و غامض 💀👁️"
+AdminBtn.TextColor3 = Color3.fromRGB(255, 100, 100)
+AdminBtn.Font = Enum.Font.GothamBold
+AdminBtn.TextSize = 18
+AdminBtn.Parent = ModesFrame
+Instance.new("UICorner", AdminBtn).CornerRadius = UDim.new(0, 8)
+local AdminStroke = Instance.new("UIStroke", AdminBtn)
+AdminStroke.Color = Color3.fromRGB(255, 0, 0)
+
+-- دالة التحديد وتغيير اللون
+local function SelectMode(mode)
+    selectedMode = mode
+    ModBtn.BackgroundColor3 = (mode == "Mod") and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(40, 15, 15)
+    ModBtn.TextColor3 = (mode == "Mod") and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(255, 100, 100)
+    
+    AdminBtn.BackgroundColor3 = (mode == "AdminMystery") and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(40, 15, 15)
+    AdminBtn.TextColor3 = (mode == "AdminMystery") and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(255, 100, 100)
 end
 
-local ModBtn = CreateButton("نسخ مشرف 👑", Color3.fromRGB(255, 50, 50))
-local HeadBtn = CreateButton("نسخ هيد ادمن 💀", Color3.fromRGB(255, 80, 80))
-local MysteryBtn = CreateButton("نسخ غامض 👁️", Color3.fromRGB(255, 100, 100))
-local StopBtn = CreateButton("إيقاف الإرسال 🛑", Color3.fromRGB(255, 255, 255))
-StopBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+ModBtn.MouseButton1Click:Connect(function() SelectMode("Mod") end)
+AdminBtn.MouseButton1Click:Connect(function() SelectMode("AdminMystery") end)
 
--- [[ 5. الأوامر ونظام الإرسال الموزون ]] --
-local Commands = {
-    Mod = "@cmdbar [TARGET] @logs [TARGET] @re [TARGET] @kill [TARGET] @nv [TARGET] @ice [TARGET] @jc [TARGET] @paint [TARGET] @worm [TARGET] @char [TARGET] c7v @tp [TARGET]",
-    Admin = "?EXPLODE [TARGET] ?WARP [TARGET] ?JAIL [TARGET] ?ICE [TARGET] ?LOOPWARF [TARGET] ?LOGS [TARGET] ?CLOGS [TARGET] ?CHATLOGS [TARGET] ?NV [TARGET] ?CMDBAR [TARGET] ?CHAR [TARGET] MIR' ?ALERT [TARGET] ?AURA [TARGET] ?EXPLODE"
-}
+-- [[ 8. أزرار التشغيل والإيقاف (تحت) ]] --
+local StartBtn = Instance.new("TextButton")
+StartBtn.Size = UDim2.new(0, 300, 0, 55)
+StartBtn.Position = UDim2.new(0, 20, 0, 400)
+StartBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) -- أخضر
+StartBtn.Text = "بدء النسخ ▶️"
+StartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StartBtn.Font = Enum.Font.GothamBlack
+StartBtn.TextSize = 22
+StartBtn.Parent = MainFrame
+Instance.new("UICorner", StartBtn).CornerRadius = UDim.new(0, 10)
 
-local isSending = false
+local StopBtn = Instance.new("TextButton")
+StopBtn.Size = UDim2.new(0, 300, 0, 55)
+StopBtn.Position = UDim2.new(1, -320, 0, 400)
+StopBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0) -- أحمر
+StopBtn.Text = "توقيف النسخ 🛑"
+StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StopBtn.Font = Enum.Font.GothamBlack
+StopBtn.TextSize = 22
+StopBtn.Parent = MainFrame
+Instance.new("UICorner", StopBtn).CornerRadius = UDim.new(0, 10)
 
-local function ExecuteAction(cmdTemplate)
-    isSending = false 
+-- [[ 9. نظام الإرسال المستمر ]] --
+StartBtn.MouseButton1Click:Connect(function()
+    if not selectedMode then
+        ModeTitle.Text = "⚠️ الرجاء تحديد نوع النسخ أولاً!"
+        task.wait(2)
+        ModeTitle.Text = "اختر نوع النسخ:"
+        return
+    end
+    
+    isSending = false
     task.wait(0.1)
     isSending = true
     
-    local finalCmd = string.gsub(cmdTemplate, "%[TARGET%]", selectedPlayer)
+    -- تجهيز الأمر وتبديل [TARGET] باسم اللاعب المختار
+    local finalCmd = string.gsub(Commands[selectedMode], "%[TARGET%]", selectedPlayer)
     
     ScanForRemotes()
     
@@ -191,14 +282,10 @@ local function ExecuteAction(cmdTemplate)
                     remote:FireServer(finalCmd)
                 end)
             end
-            task.wait(1) 
+            task.wait(1) -- سرعة الإرسال (كل ثانية)
         end
     end)
-end
-
-ModBtn.MouseButton1Click:Connect(function() ExecuteAction(Commands.Mod) end)
-HeadBtn.MouseButton1Click:Connect(function() ExecuteAction(Commands.Admin) end)
-MysteryBtn.MouseButton1Click:Connect(function() ExecuteAction(Commands.Admin) end)
+end)
 
 StopBtn.MouseButton1Click:Connect(function()
     isSending = false
