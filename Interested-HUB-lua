@@ -1,88 +1,83 @@
 -- // ================================================================= //
--- //         INTJ-HUB : ABOOD CUSTOM CHAT & MAP ENGINE (V22)           //
--- //             SUPPORT FOR CUSTOM MAP-CODED CHAT SYSTEMS             //
+-- //          👑 ABOOD ULTIMATE HUB V30 - SPECIAL EDITION 👑           //
+-- //              DESIGNED WITH HIGH ELEGANCE & FAST CHAT              //
 -- // ================================================================= //
 
+local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local CoreGui = game:GetService("CoreGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TextChatService = game:GetService("TextChatService")
+local RunService = game:GetService("RunService")
 
--- قائمة الريموتات المكشوفة المخصصة للماب
+-- // --- 1. محرك فحص وشات الماب السريع جداً --- //
 local CustomChatRemotes = {}
 
--- // --- 1. فاحص ريموتات الشات المخصص للماب (Custom Chat Finder) --- //
-local function ScanForCustomChatRemotes()
+local function ScanRemotes()
     CustomChatRemotes = {}
-    local keywords = {"chat", "say", "msg", "message", "talk", "send", "speak", "text", "shout", "cmd", "command"}
-    
-    local function search(parent)
-        pcall(function()
-            for _, obj in ipairs(parent:GetDescendants()) do
-                if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
-                    local nameLower = string.lower(obj.Name)
-                    for _, kw in ipairs(keywords) do
-                        if string.find(nameLower, kw) then
-                            table.insert(CustomChatRemotes, obj)
-                            break
-                        end
+    local keywords = {"chat", "say", "msg", "message", "talk", "send", "speak", "text", "shout", "cmd"}
+    pcall(function()
+        for _, obj in ipairs(game:GetDescendants()) do
+            if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
+                local nameLower = string.lower(obj.Name)
+                for _, kw in ipairs(keywords) do
+                    if string.find(nameLower, kw) then
+                        table.insert(CustomChatRemotes, obj)
+                        break
                     end
                 end
             end
-        end)
-    end
-
-    search(ReplicatedStorage)
-    search(game:GetService("Workspace"))
-    search(LocalPlayer)
+        end
+    end)
 end
+task.spawn(ScanRemotes)
 
-ScanForCustomChatRemotes()
-
--- // --- 2. محرك الشات الشامل --- //
-local function UniversalSendChat(msg)
+local function FastSendChat(msg)
     if not msg or msg == "" then return end
-
+    
+    -- إرسال عبر ريموتات الماب المكتشفة
     for _, remote in ipairs(CustomChatRemotes) do
-        pcall(function()
-            if remote:IsA("RemoteEvent") then
-                remote:FireServer(msg)
-                remote:FireServer(msg, "All")
-                remote:FireServer("Message", msg)
-            elseif remote:IsA("RemoteFunction") then
-                remote:InvokeServer(msg)
-                remote:InvokeServer(msg, "All")
-            end
+        task.spawn(function()
+            pcall(function()
+                if remote:IsA("RemoteEvent") then
+                    remote:FireServer(msg)
+                    remote:FireServer(msg, "All")
+                elseif remote:IsA("RemoteFunction") then
+                    remote:InvokeServer(msg)
+                end
+            end)
         end)
     end
 
-    pcall(function()
-        if TextChatService and TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-            local textChannels = TextChatService:FindFirstChild("TextChannels")
-            if textChannels then
-                local mainChan = textChannels:FindFirstChild("RBXGeneral") or textChannels:FindFirstChild("All")
-                if mainChan then
-                    mainChan:SendAsync(msg)
+    -- شات روبلوكس الجديد
+    task.spawn(function()
+        pcall(function()
+            if TextChatService and TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+                local textChannels = TextChatService:FindFirstChild("TextChannels")
+                if textChannels then
+                    local mainChan = textChannels:FindFirstChild("RBXGeneral") or textChannels:FindFirstChild("All")
+                    if mainChan then mainChan:SendAsync(msg) end
                 end
             end
-        end
+        end)
     end)
 
-    pcall(function()
-        local chatEvents = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
-        if chatEvents then
-            local sayRemote = chatEvents:FindFirstChild("SayMessageRequest")
-            if sayRemote and sayRemote:IsA("RemoteEvent") then
-                sayRemote:FireServer(msg, "All")
+    -- شات روبلوكس الكلاسيكي
+    task.spawn(function()
+        pcall(function()
+            local chatEvents = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+            if chatEvents then
+                local sayRemote = chatEvents:FindFirstChild("SayMessageRequest")
+                if sayRemote then sayRemote:FireServer(msg, "All") end
             end
-        end
+        end)
     end)
 end
 
--- // --- 3. إنشاء الواجهة الرئيسية --- //
+-- // --- 2. إنشاء الواجهة الأسطورية --- //
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "AboodCustomChatHUB_V22"
+ScreenGui.Name = "AboodUltimateHub_V30"
 ScreenGui.ResetOnSpawn = false
 
 pcall(function()
@@ -91,475 +86,324 @@ pcall(function()
     elseif syn and syn.protect_gui then
         syn.protect_gui(ScreenGui)
         ScreenGui.Parent = CoreGui
-    elseif CoreGui then
-        ScreenGui.Parent = CoreGui
     else
-        ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+        ScreenGui.Parent = CoreGui or LocalPlayer:WaitForChild("PlayerGui")
     end
 end)
 
--- زر السهم الجانبي (تم إزالة كلمة ABOD)
-local ArrowBtn = Instance.new("TextButton")
-ArrowBtn.Size = UDim2.new(0, 36, 0, 36)
-ArrowBtn.Position = UDim2.new(1, -45, 0.5, -18)
-ArrowBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
-ArrowBtn.Text = "◄"
-ArrowBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ArrowBtn.Font = Enum.Font.BuilderSansBold
-ArrowBtn.TextSize = 14
-ArrowBtn.Parent = ScreenGui
-local arc = Instance.new("UICorner", ArrowBtn) arc.CornerRadius = UDim.new(0, 8)
-local ars = Instance.new("UIStroke", ArrowBtn) ars.Color = Color3.fromRGB(255, 70, 80)
+-- زر التجميع والفتح/الإغلاق العائم
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(0, 50, 0, 50)
+ToggleBtn.Position = UDim2.new(0.02, 0, 0.4, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(15, 10, 25)
+ToggleBtn.Text = "👑"
+ToggleBtn.TextSize = 24
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Parent = ScreenGui
 
--- النافذة الرئيسية
+local ToggleCorner = Instance.new("UICorner", ToggleBtn) ToggleCorner.CornerRadius = UDim.new(1, 0)
+local ToggleStroke = Instance.new("UIStroke", ToggleBtn)
+ToggleStroke.Color = Color3.fromRGB(255, 0, 100)
+ToggleStroke.Thickness = 2.5
+
+-- الإطار الرئيسي للواجهة
 local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 610, 0, 440)
-MainFrame.Position = UDim2.new(0.5, -305, 0.5, -220)
-MainFrame.BackgroundColor3 = Color3.fromRGB(12, 5, 7)
+MainFrame.Size = UDim2.new(0, 580, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -290, 0.5, -210)
+MainFrame.BackgroundColor3 = Color3.fromRGB(10, 8, 16)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
+MainFrame.ClipsDescendants = true
 MainFrame.Parent = ScreenGui
 
-local MainCorner = Instance.new("UICorner", MainFrame) MainCorner.CornerRadius = UDim.new(0, 12)
-local MainStroke = Instance.new("UIStroke", MainFrame) MainStroke.Color = Color3.fromRGB(180, 20, 30) MainStroke.Thickness = 2
+local MainCorner = Instance.new("UICorner", MainFrame) MainCorner.CornerRadius = UDim.new(0, 16)
+local MainStroke = Instance.new("UIStroke", MainFrame)
+MainStroke.Color = Color3.fromRGB(255, 0, 100)
+MainStroke.Thickness = 2
 
-local function ToggleMenu()
+-- تأثير أنيميشن إضاءة الحدود (Neon Pulse Glow)
+task.spawn(function()
+    while task.wait(1.5) do
+        TweenService:Create(MainStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+            Color = Color3.fromRGB(138, 43, 226)
+        }):Play()
+        TweenService:Create(ToggleStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+            Color = Color3.fromRGB(138, 43, 226)
+        }):Play()
+        task.wait(1.5)
+        TweenService:Create(MainStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+            Color = Color3.fromRGB(255, 0, 100)
+        }):Play()
+        TweenService:Create(ToggleStroke, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {
+            Color = Color3.fromRGB(255, 0, 100)
+        }):Play()
+    end
+end)
+
+ToggleBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
-    ArrowBtn.Text = MainFrame.Visible and "◄" or "►"
-end
-ArrowBtn.MouseButton1Click:Connect(ToggleMenu)
+    MainFrame:ScaleGlow(MainFrame.Visible)
+end)
 
--- شريط التبويبات بالترتيب الجديد من اليسار لليمين
-local NavFrame = Instance.new("Frame")
-NavFrame.Size = UDim2.new(1, -20, 0, 36)
-NavFrame.Position = UDim2.new(0, 10, 0, 12)
-NavFrame.BackgroundTransparency = 1
-NavFrame.Parent = MainFrame
+-- شريط العنوان العلوي (Banner)
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 50)
+Header.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
+Header.Parent = MainFrame
 
-local NavLayout = Instance.new("UIListLayout", NavFrame)
-NavLayout.FillDirection = Enum.FillDirection.Horizontal
-NavLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-NavLayout.Padding = UDim.new(0, 4)
+local HeaderCorner = Instance.new("UICorner", Header) HeaderCorner.CornerRadius = UDim.new(0, 16)
+
+local HeaderTitle = Instance.new("TextLabel")
+HeaderTitle.Size = UDim2.new(1, -20, 1, 0)
+HeaderTitle.Position = UDim2.new(0, 10, 0, 0)
+HeaderTitle.BackgroundTransparency = 1
+HeaderTitle.Text = "✨ تم تشغيل سكربت عبود ✨ ABOOD ULTIMATE HUB"
+HeaderTitle.TextColor3 = Color3.fromRGB(255, 215, 0)
+HeaderTitle.Font = Enum.Font.BuilderSansBold
+HeaderTitle.TextSize = 15
+HeaderTitle.Parent = Header
+
+-- شريط التبويبات (Tabs)
+local TabBar = Instance.new("Frame")
+TabBar.Size = UDim2.new(1, -20, 0, 36)
+TabBar.Position = UDim2.new(0, 10, 0, 58)
+TabBar.BackgroundTransparency = 1
+TabBar.Parent = MainFrame
+
+local TabListLayout = Instance.new("UIListLayout", TabBar)
+TabListLayout.FillDirection = Enum.FillDirection.Horizontal
+TabListLayout.Padding = UDim.new(0, 8)
+TabListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
 local Container = Instance.new("Frame")
-Container.Size = UDim2.new(1, -24, 1, -65)
-Container.Position = UDim2.new(0, 12, 0, 55)
+Container.Size = UDim2.new(1, -20, 1, -110)
+Container.Position = UDim2.new(0, 10, 0, 100)
 Container.BackgroundTransparency = 1
 Container.Parent = MainFrame
 
-local TabsList = {
-    "تخريب على الكل 💥",
-    "النسخ 📋",
-    "حماية 🛡️",
-    "Cmdbar2 ⚡",
-    "سكربتات إضافية 📜",
-    "الريموتات 🔍"
-}
-local TabPages = {}
-local ActiveTabBtn = nil
+local Tabs = {"🎯 النسخ والتطبيش", "🛡️ الحماية الأسطورية", "⚡ شات الماب والمزيد"}
+local Pages = {}
+local CurrentTabBtn = nil
 
-for i, tabName in ipairs(TabsList) do
+for i, tabName in ipairs(Tabs) do
     local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.16, 0, 1, 0)
-    btn.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
+    btn.Size = UDim2.new(0.31, 0, 1, 0)
+    btn.BackgroundColor3 = Color3.fromRGB(25, 18, 38)
     btn.Text = tabName
-    btn.TextColor3 = Color3.fromRGB(180, 150, 155)
+    btn.TextColor3 = Color3.fromRGB(180, 180, 200)
     btn.Font = Enum.Font.BuilderSansBold
-    btn.TextSize = 10
-    btn.Parent = NavFrame
+    btn.TextSize = 12
+    btn.Parent = TabBar
 
-    local bc = Instance.new("UICorner", btn) bc.CornerRadius = UDim.new(0, 7)
-    local bs = Instance.new("UIStroke", btn) bs.Color = Color3.fromRGB(50, 15, 22)
+    local bCorner = Instance.new("UICorner", btn) bCorner.CornerRadius = UDim.new(0, 8)
+    local bStroke = Instance.new("UIStroke", btn) bStroke.Color = Color3.fromRGB(50, 35, 70)
 
     local page = Instance.new("Frame")
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
-    page.Visible = false
+    page.Visible = (i == 1)
     page.Parent = Container
-    TabPages[tabName] = page
+    Pages[tabName] = page
 
     btn.MouseButton1Click:Connect(function()
-        if ActiveTabBtn then
-            ActiveTabBtn.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-            ActiveTabBtn.TextColor3 = Color3.fromRGB(180, 150, 155)
-            ActiveTabBtn:FindFirstChildOfClass("UIStroke").Color = Color3.fromRGB(50, 15, 22)
-            TabPages[ActiveTabBtn.Text].Visible = false
+        for _, p in pairs(Pages) do p.Visible = false end
+        for _, b in ipairs(TabBar:GetChildren()) do
+            if b:IsA("TextButton") then
+                TweenService:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 18, 38), TextColor3 = Color3.fromRGB(180, 180, 200)}):Play()
+            end
         end
-        ActiveTabBtn = btn
-        btn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
-        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn:FindFirstChildOfClass("UIStroke").Color = Color3.fromRGB(230, 30, 45)
         page.Visible = true
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(255, 0, 100), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
     end)
 
     if i == 1 then
-        ActiveTabBtn = btn
-        btn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(255, 0, 100)
         btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-        btn:FindFirstChildOfClass("UIStroke").Color = Color3.fromRGB(230, 30, 45)
-        page.Visible = true
     end
 end
 
 -- =================================================================
--- TAB 1: تخريب على الكل (يسار القائمة)
+-- PAGE 1: النسخ السريع الجبار (Target Player Commands)
 -- =================================================================
-local SabotagePage = TabPages["تخريب على الكل 💥"]
-local SabScroll = Instance.new("ScrollingFrame", SabotagePage)
-SabScroll.Size = UDim2.new(1, 0, 1, 0)
-SabScroll.BackgroundTransparency = 1
-SabScroll.ScrollBarThickness = 4
-SabScroll.CanvasSize = UDim2.new(0, 0, 0, 380)
+local TargetPage = Pages["🎯 النسخ والتطبيش"]
 
-local function CreateColoredButton(parent, text, color, yPos, callback)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -10, 0, 34)
-    btn.Position = UDim2.new(0, 0, 0, yPos)
-    btn.BackgroundColor3 = color
-    btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.BuilderSansBold
-    btn.TextSize = 12
-    btn.Parent = parent
-    local c = Instance.new("UICorner", btn) c.CornerRadius = UDim.new(0, 6)
-    btn.MouseButton1Click:Connect(callback)
-    return btn
-end
+local SelectedPlayerName = nil
 
-local function CommandAll(cmdPrefix)
-    for _, p in ipairs(Players:GetPlayers()) do
-        UniversalSendChat(cmdPrefix .. " " .. p.Name)
-        task.wait(0.05)
-    end
-end
+local InfoLbl = Instance.new("TextLabel")
+InfoLbl.Size = UDim2.new(1, 0, 0, 25)
+InfoLbl.BackgroundTransparency = 1
+InfoLbl.Text = "👤 حدد اللاعب المراد النسخ عليه من القائمة:"
+InfoLbl.TextColor3 = Color3.fromRGB(255, 215, 0)
+InfoLbl.Font = Enum.Font.BuilderSansBold
+InfoLbl.TextSize = 12
+InfoLbl.Parent = TargetPage
 
--- 1. بنفسجي: تشغيل سبام السيرفر التدريجي الجبار
-local SpamActive = false
-local SpamBtn = CreateColoredButton(SabScroll, "⚡ تشغيل سبام السيرفر التدريجي الجبار ⚡", Color3.fromRGB(140, 20, 220), 0, function()
-    SpamActive = not SpamActive
-    if SpamActive then
-        SpamBtn.Text = "🛑 إيقاف سبام السيرفر التدريجي"
-        task.spawn(function()
-            while SpamActive do
-                for _, p in ipairs(Players:GetPlayers()) do
-                    if not SpamActive then break end
-                    UniversalSendChat(";kill " .. p.Name)
-                    UniversalSendChat(";jail " .. p.Name)
-                    task.wait(0.1)
-                end
-                task.wait(0.5)
-            end
-        end)
-    else
-        SpamBtn.Text = "⚡ تشغيل سبام السيرفر التدريجي الجبار ⚡"
-    end
-end)
+local PlrScroll = Instance.new("ScrollingFrame")
+PlrScroll.Size = UDim2.new(1, 0, 0, 160)
+PlrScroll.Position = UDim2.new(0, 0, 0, 28)
+PlrScroll.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
+PlrScroll.ScrollBarThickness = 4
+PlrScroll.Parent = TargetPage
+local psc = Instance.new("UICorner", PlrScroll) psc.CornerRadius = UDim.new(0, 8)
+local pss = Instance.new("UIStroke", PlrScroll) pss.Color = Color3.fromRGB(255, 0, 100)
 
--- 2. أحمر: إبادة السيرفر
-CreateColoredButton(SabScroll, "💀 إبادة السيرفر بالكامل 💀", Color3.fromRGB(220, 30, 30), 40, function()
-    CommandAll(";kill")
-end)
+local PlrListLayout = Instance.new("UIListLayout", PlrScroll)
+PlrListLayout.Padding = UDim.new(0, 4)
 
--- 3. أخضر: تحويل الكل لديدان
-CreateColoredButton(SabScroll, "🐛 تحويل الكل لديدان 🐛", Color3.fromRGB(30, 180, 80), 80, function()
-    CommandAll(";worm")
-end)
+local StatusLbl = Instance.new("TextLabel")
+StatusLbl.Size = UDim2.new(1, 0, 0, 25)
+StatusLbl.Position = UDim2.new(0, 0, 0, 195)
+StatusLbl.BackgroundTransparency = 1
+StatusLbl.Text = "🎯 الهدف المحدد حالياً: لم يتم التحديد"
+StatusLbl.TextColor3 = Color3.fromRGB(200, 200, 220)
+StatusLbl.Font = Enum.Font.BuilderSansBold
+StatusLbl.TextSize = 12
+StatusLbl.Parent = TargetPage
 
--- 4. أزرق: تجميد الكل
-CreateColoredButton(SabScroll, "❄️ تجميد الكل ❄️", Color3.fromRGB(30, 120, 220), 120, function()
-    CommandAll(";freeze")
-end)
-
--- 5. رصاصي: سجن الكل
-CreateColoredButton(SabScroll, "⛓️ سجن الكل ⛓️", Color3.fromRGB(100, 100, 100), 160, function()
-    CommandAll(";jail")
-end)
-
--- 6. أزرق غامق: إعطاء تايتل مخصص للكل + خانة كتابة تحتها
-local TitleBtn = CreateColoredButton(SabScroll, "👑 إعطاء تايتل مخصص للكل 👑", Color3.fromRGB(15, 35, 100), 200, function() end)
-
-local TitleInput = Instance.new("TextBox")
-TitleInput.Size = UDim2.new(1, -10, 0, 32)
-TitleInput.Position = UDim2.new(0, 0, 0, 240)
-TitleInput.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-TitleInput.Text = "ABOOD VIP"
-TitleInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-TitleInput.Font = Enum.Font.BuilderSansBold
-TitleInput.TextSize = 12
-TitleInput.Parent = SabScroll
-local tic = Instance.new("UICorner", TitleInput) tic.CornerRadius = UDim.new(0, 6)
-local tis = Instance.new("UIStroke", TitleInput) tis.Color = Color3.fromRGB(15, 35, 100)
-
-TitleBtn.MouseButton1Click:Connect(function()
-    local txt = TitleInput.Text
-    for _, p in ipairs(Players:GetPlayers()) do
-        UniversalSendChat(";title " .. p.Name .. " " .. txt)
-        task.wait(0.05)
-    end
-end)
-
--- 7. وردي: قذف و تطيير الكل تدريجياً
-CreateColoredButton(SabScroll, "🚀 قذف و تطيير الكل تدريجياً 🚀", Color3.fromRGB(230, 80, 160), 280, function()
-    for _, p in ipairs(Players:GetPlayers()) do
-        UniversalSendChat(";fling " .. p.Name)
-        task.wait(0.2)
-    end
-end)
-
--- =================================================================
--- TAB 2: النسخ
--- =================================================================
-local ClonePage = TabPages["النسخ 📋"]
-local SelectedPlayer = nil
-
-local SelectLabel = Instance.new("TextLabel")
-SelectLabel.Size = UDim2.new(1, 0, 0, 25)
-SelectLabel.BackgroundTransparency = 1
-SelectLabel.Text = "🎯 اختر لاعباً من القائمة للبدء بالنسخ والتطبيش عليه:"
-SelectLabel.TextColor3 = Color3.fromRGB(255, 70, 80)
-SelectLabel.Font = Enum.Font.BuilderSansBold
-SelectLabel.TextSize = 12
-SelectLabel.Parent = ClonePage
-
-local PlayerListFrame = Instance.new("ScrollingFrame")
-PlayerListFrame.Size = UDim2.new(1, 0, 0, 190)
-PlayerListFrame.Position = UDim2.new(0, 0, 0, 30)
-PlayerListFrame.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-PlayerListFrame.ScrollBarThickness = 4
-PlayerListFrame.Parent = ClonePage
-local plc = Instance.new("UICorner", PlayerListFrame) plc.CornerRadius = UDim.new(0, 8)
-local pls = Instance.new("UIStroke", PlayerListFrame) pls.Color = Color3.fromRGB(180, 20, 30)
-
-local PlrLayout = Instance.new("UIListLayout", PlayerListFrame)
-PlrLayout.Padding = UDim.new(0, 4)
-
-local SelectedLabel = Instance.new("TextLabel")
-SelectedLabel.Size = UDim2.new(1, 0, 0, 25)
-SelectedLabel.Position = UDim2.new(0, 0, 0, 228)
-SelectedLabel.BackgroundTransparency = 1
-SelectedLabel.Text = "اللاعب المحدد: لا يوجد"
-SelectedLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-SelectedLabel.Font = Enum.Font.BuilderSansBold
-SelectedLabel.TextSize = 11
-SelectedLabel.Parent = ClonePage
-
-local StartCloneBtn = Instance.new("TextButton")
-StartCloneBtn.Size = UDim2.new(1, 0, 0, 38)
-StartCloneBtn.Position = UDim2.new(0, 0, 0, 258)
-StartCloneBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
-StartCloneBtn.Text = "⚡ ابدأ النسخ والتطبيش على المحدد ⚡"
-StartCloneBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StartCloneBtn.Font = Enum.Font.BuilderSansBold
-StartCloneBtn.TextSize = 12
-StartCloneBtn.Parent = ClonePage
-local scc = Instance.new("UICorner", StartCloneBtn) scc.CornerRadius = UDim.new(0, 6)
-
-local function RefreshPlayerList()
-    for _, child in ipairs(PlayerListFrame:GetChildren()) do
+local function RefreshPlayers()
+    for _, child in ipairs(PlrScroll:GetChildren()) do
         if child:IsA("TextButton") then child:Destroy() end
     end
     for _, plr in ipairs(Players:GetPlayers()) do
         local pBtn = Instance.new("TextButton")
         pBtn.Size = UDim2.new(1, -8, 0, 28)
-        pBtn.BackgroundColor3 = Color3.fromRGB(30, 12, 18)
-        pBtn.Text = "👤 " .. plr.Name .. " (" .. plr.DisplayName .. ")"
-        pBtn.TextColor3 = Color3.fromRGB(220, 220, 220)
+        pBtn.BackgroundColor3 = Color3.fromRGB(28, 20, 42)
+        pBtn.Text = "🔥 " .. plr.Name .. " (" .. plr.DisplayName .. ")"
+        pBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         pBtn.Font = Enum.Font.BuilderSansBold
         pBtn.TextSize = 11
-        pBtn.Parent = PlayerListFrame
-        local c = Instance.new("UICorner", pBtn) c.CornerRadius = UDim.new(0, 5)
+        pBtn.Parent = PlrScroll
+        local c = Instance.new("UICorner", pBtn) c.CornerRadius = UDim.new(0, 6)
 
         pBtn.MouseButton1Click:Connect(function()
-            SelectedPlayer = plr.Name
-            SelectedLabel.Text = "🎯 اللاعب المحدد: " .. SelectedPlayer
+            SelectedPlayerName = plr.Name
+            StatusLbl.Text = "🎯 الهدف المحدد حالياً: " .. SelectedPlayerName
+            StatusLbl.TextColor3 = Color3.fromRGB(0, 255, 150)
         end)
     end
-    PlayerListFrame.CanvasSize = UDim2.new(0, 0, 0, #Players:GetPlayers() * 32)
+    PlrScroll.CanvasSize = UDim2.new(0, 0, 0, #Players:GetPlayers() * 32)
 end
 
-RefreshPlayerList()
-Players.PlayerAdded:Connect(RefreshPlayerList)
-Players.PlayerRemoving:Connect(RefreshPlayerList)
+RefreshPlayers()
+Players.PlayerAdded:Connect(RefreshPlayers)
+Players.PlayerRemoving:Connect(RefreshPlayers)
 
-local CloneCmds = {
-    ";jail", ";jail2", ";freeze", ";kill", ";loopkill", ";respawn", ";refresh", ";void",
-    ";fire", ";bring", ";to", ";teleport", ";handTo", ";box", ";dog", ";worm",
-    ";wormify", ";chibify", ";plushify", ";freaky", ";frogly", ";spongify", ";bigify",
-    ";creepify", ";dinofy", ";fatify", ";ghost", ";squash", ";fat", ";thin",
-    ";giantDwarf", ";dwarf", ";headSize", ";bodyTypeScale", ";depth", ";potatoHead",
-    ";char", ";cmdbar", ";logs", ";chatLogs"
+-- قوائم الأوامر الخاصة المطلوبة بالضبط
+local TargetCommands = {
+    ";jail", ";freeze", ";kill", ";respawn", ";refresh", ";void", ";fire", ";bring",
+    ";to", ";teleport", ";handTo", ";box", ";dog", ";worm", ";wormify", ";chibify",
+    ";plushify", ";freaky", ";frogly", ";spongify", ";bigify", ";creepify", ";dinofy",
+    ";fatify", ";ghost", ";squash", ";fat", ";thin", ";giantDwarf", ";dwarf",
+    ";headSize", ";bodyTypeScale", ";depth", ";potatoHead", ";char", ";cmdbar", ";logs"
 }
 
-StartCloneBtn.MouseButton1Click:Connect(function()
-    if not SelectedPlayer then
-        SelectedLabel.Text = "❌ يرجى تحديد لاعب من القائمة أولاً!"
+-- زر النسخ السريع الجبار بنقرة واحدة
+local FastCopyBtn = Instance.new("TextButton")
+FastCopyBtn.Size = UDim2.new(1, 0, 0, 48)
+FastCopyBtn.Position = UDim2.new(0, 0, 0, 225)
+FastCopyBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 80)
+FastCopyBtn.Text = "⚡ تفعيل النسخ والتطبيش السريع الجبار (ضغطة واحدة) ⚡"
+FastCopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FastCopyBtn.Font = Enum.Font.BuilderSansBold
+FastCopyBtn.TextSize = 13
+FastCopyBtn.Parent = TargetPage
+
+local fbc = Instance.new("UICorner", FastCopyBtn) fbc.CornerRadius = UDim.new(0, 10)
+local fbs = Instance.new("UIStroke", FastCopyBtn) fbs.Color = Color3.fromRGB(255, 215, 0) fbs.Thickness = 2
+
+FastCopyBtn.MouseButton1Click:Connect(function()
+    if not SelectedPlayerName then
+        StatusLbl.Text = "⚠️ اختر لاعباً أولاً من القائمة فوق!"
+        StatusLbl.TextColor3 = Color3.fromRGB(255, 50, 50)
         return
     end
+
+    StatusLbl.Text = "🚀 جاري الجلد والنسخ السريع على: " .. SelectedPlayerName
+    StatusLbl.TextColor3 = Color3.fromRGB(255, 215, 0)
+
     task.spawn(function()
-        for _, cmd in ipairs(CloneCmds) do
-            UniversalSendChat(cmd .. " " .. SelectedPlayer)
-            task.wait(0.12)
+        for _, cmd in ipairs(TargetCommands) do
+            local fullCommand = cmd .. " " .. SelectedPlayerName
+            FastSendChat(fullCommand)
+            task.wait(0.04) -- سرعة إرسال فائقة
         end
+        StatusLbl.Text = "✅ تم إرسال كافة أوامر النسخ بنجاح!"
+        StatusLbl.TextColor3 = Color3.fromRGB(0, 255, 150)
     end)
 end)
 
 -- =================================================================
--- TAB 3: حماية
+-- PAGE 2: الحماية الأسطورية
 -- =================================================================
-local ProtectPage = TabPages["حماية 🛡️"]
+local ProtectPage = Pages["🛡️ الحماية الأسطورية"]
 
-local ProtToggleBtn = Instance.new("TextButton")
-ProtToggleBtn.Size = UDim2.new(1, 0, 0, 36)
-ProtToggleBtn.Position = UDim2.new(0, 0, 0, 0)
-ProtToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-ProtToggleBtn.Text = "🛡️ حماية فك السجن والتجميد تلقائياً (;unjc ;unice)"
-ProtToggleBtn.TextColor3 = Color3.fromRGB(255, 70, 80)
-ProtToggleBtn.Font = Enum.Font.BuilderSansBold
-ProtToggleBtn.TextSize = 12
-ProtToggleBtn.Parent = ProtectPage
-local ptc = Instance.new("UICorner", ProtToggleBtn) ptc.CornerRadius = UDim.new(0, 6)
-local pts = Instance.new("UIStroke", ProtToggleBtn) pts.Color = Color3.fromRGB(180, 20, 30)
+local AutoUnjailBtn = Instance.new("TextButton")
+AutoUnjailBtn.Size = UDim2.new(1, 0, 0, 50)
+AutoUnjailBtn.Position = UDim2.new(0, 0, 0, 10)
+AutoUnjailBtn.BackgroundColor3 = Color3.fromRGB(20, 15, 35)
+AutoUnjailBtn.Text = "🛡️ تشغيل حماية فك السجن والتجميد التلقائية (;unjc ;unice)"
+AutoUnjailBtn.TextColor3 = Color3.fromRGB(255, 70, 120)
+AutoUnjailBtn.Font = Enum.Font.BuilderSansBold
+AutoUnjailBtn.TextSize = 12
+AutoUnjailBtn.Parent = ProtectPage
 
-local IsProtecting = false
-ProtToggleBtn.MouseButton1Click:Connect(function()
-    IsProtecting = not IsProtecting
-    if IsProtecting then
-        ProtToggleBtn.Text = "🛡️ الحماية الخارقة شغالّة وتعمل تلقائياً! ⚡"
-        ProtToggleBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
-        ProtToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+local p1c = Instance.new("UICorner", AutoUnjailBtn) p1c.CornerRadius = UDim.new(0, 8)
+local p1s = Instance.new("UIStroke", AutoUnjailBtn) p1s.Color = Color3.fromRGB(255, 0, 100)
+
+local Protecting = false
+AutoUnjailBtn.MouseButton1Click:Connect(function()
+    Protecting = not Protecting
+    if Protecting then
+        AutoUnjailBtn.Text = "⚡ الحماية الأسطورية شغّالة الآن وتكافح السجن والتجميد! ⚡"
+        AutoUnjailBtn.BackgroundColor3 = Color3.fromRGB(0, 180, 100)
+        AutoUnjailBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
         task.spawn(function()
-            while IsProtecting do
-                UniversalSendChat(";unjc ;unice")
-                task.wait(1.8)
+            while Protecting do
+                FastSendChat(";unjc ;unice")
+                task.wait(1.5)
             end
         end)
     else
-        ProtToggleBtn.Text = "🛡️ حماية فك السجن والتجميد تلقائياً (;unjc ;unice)"
-        ProtToggleBtn.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-        ProtToggleBtn.TextColor3 = Color3.fromRGB(255, 70, 80)
+        AutoUnjailBtn.Text = "🛡️ تشغيل حماية فك السجن والتجميد التلقائية (;unjc ;unice)"
+        AutoUnjailBtn.BackgroundColor3 = Color3.fromRGB(20, 15, 35)
+        AutoUnjailBtn.TextColor3 = Color3.fromRGB(255, 70, 120)
     end
 end)
 
 -- =================================================================
--- TAB 4: Cmdbar2
+-- PAGE 3: شات الماب والمزيد
 -- =================================================================
-local CmdBarPage = TabPages["Cmdbar2 ⚡"]
+local ExtraPage = Pages["⚡ شات الماب والمزيد"]
 
-local CmdBarInput = Instance.new("TextBox")
-CmdBarInput.Size = UDim2.new(1, 0, 0, 110)
-CmdBarInput.Position = UDim2.new(0, 0, 0, 10)
-CmdBarInput.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-CmdBarInput.Text = ";unjc\n;unice"
-CmdBarInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-CmdBarInput.Font = Enum.Font.BuilderSansBold
-CmdBarInput.TextSize = 12
-CmdBarInput.TextYAlignment = Enum.TextYAlignment.Top
-CmdBarInput.Parent = CmdBarPage
-local cbic = Instance.new("UICorner", CmdBarInput) cbic.CornerRadius = UDim.new(0, 6)
-local cbis = Instance.new("UIStroke", CmdBarInput) cbis.Color = Color3.fromRGB(180, 20, 30)
+local CmdInput = Instance.new("TextBox")
+CmdInput.Size = UDim2.new(1, 0, 0, 100)
+CmdInput.Position = UDim2.new(0, 0, 0, 10)
+CmdInput.BackgroundColor3 = Color3.fromRGB(18, 12, 28)
+CmdInput.Text = ";unjc\n;unice"
+CmdInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+CmdInput.Font = Enum.Font.BuilderSansBold
+CmdInput.TextSize = 12
+CmdInput.TextYAlignment = Enum.TextYAlignment.Top
+CmdInput.Parent = ExtraPage
+local cic = Instance.new("UICorner", CmdInput) cic.CornerRadius = UDim.new(0, 8)
+local cis = Instance.new("UIStroke", CmdInput) cis.Color = Color3.fromRGB(255, 0, 100)
 
-local CmdBarSendBtn = Instance.new("TextButton")
-CmdBarSendBtn.Size = UDim2.new(1, 0, 0, 38)
-CmdBarSendBtn.Position = UDim2.new(0, 0, 0, 130)
-CmdBarSendBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
-CmdBarSendBtn.Text = "⚡ إرسال عبر شات الماب المخصص"
-CmdBarSendBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CmdBarSendBtn.Font = Enum.Font.BuilderSansBold
-CmdBarSendBtn.TextSize = 12
-CmdBarSendBtn.Parent = CmdBarPage
-local cbc1 = Instance.new("UICorner", CmdBarSendBtn) cbc1.CornerRadius = UDim.new(0, 6)
+local SendCmdBtn = Instance.new("TextButton")
+SendCmdBtn.Size = UDim2.new(1, 0, 0, 42)
+SendCmdBtn.Position = UDim2.new(0, 0, 0, 120)
+SendCmdBtn.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+SendCmdBtn.Text = "🚀 إرسال الأوامر عبر شات الماب المخصص"
+SendCmdBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SendCmdBtn.Font = Enum.Font.BuilderSansBold
+SendCmdBtn.TextSize = 12
+SendCmdBtn.Parent = ExtraPage
+local smc = Instance.new("UICorner", SendCmdBtn) smc.CornerRadius = UDim.new(0, 8)
 
-CmdBarSendBtn.MouseButton1Click:Connect(function()
-    for line in string.gmatch(CmdBarInput.Text, "[^\r\n]+") do
-        UniversalSendChat(line)
-        task.wait(0.2)
+SendCmdBtn.MouseButton1Click:Connect(function()
+    for line in string.gmatch(CmdInput.Text, "[^\r\n]+") do
+        FastSendChat(line)
+        task.wait(0.1)
     end
-end)
-
--- =================================================================
--- TAB 5: سكربتات إضافية
--- =================================================================
-local ExtraPage = TabPages["سكربتات إضافية 📜"]
-
-local ExtraGrid = Instance.new("UIGridLayout", ExtraPage)
-ExtraGrid.CellSize = UDim2.new(0.48, 0, 0, 36)
-ExtraGrid.CellPadding = UDim2.new(0.04, 0, 0, 8)
-
-local function AddScriptButton(name, code)
-    local btn = Instance.new("TextButton")
-    btn.Text = name
-    btn.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-    btn.TextColor3 = Color3.fromRGB(255, 70, 80)
-    btn.Font = Enum.Font.BuilderSansBold
-    btn.TextSize = 11
-    btn.Parent = ExtraPage
-    local c = Instance.new("UICorner", btn) c.CornerRadius = UDim.new(0, 6)
-    local s = Instance.new("UIStroke", btn) s.Color = Color3.fromRGB(180, 20, 30)
-    btn.MouseButton1Click:Connect(function()
-        pcall(function() loadstring(code)() end)
-    end)
-end
-
-AddScriptButton("Infinite Yield 👑", "loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()")
-AddScriptButton("Fly Script 🕊️", "loadstring(game:HttpGet('https://raw.githubusercontent.com/jscripty/FlyScript/main/fly.lua'))()")
-
--- =================================================================
--- TAB 6: الريموتات (شات الماب)
--- =================================================================
-local RemotesPage = TabPages["الريموتات 🔍"]
-
-local InfoLabel = Instance.new("TextLabel")
-InfoLabel.Size = UDim2.new(1, 0, 0, 30)
-InfoLabel.BackgroundTransparency = 1
-InfoLabel.Text = "🛠️ أدوات ربط شات الماب المخصص مع السكربت:"
-InfoLabel.TextColor3 = Color3.fromRGB(255, 70, 80)
-InfoLabel.Font = Enum.Font.BuilderSansBold
-InfoLabel.TextSize = 12
-InfoLabel.Parent = RemotesPage
-
-local ScanBtn = Instance.new("TextButton")
-ScanBtn.Size = UDim2.new(1, 0, 0, 36)
-ScanBtn.Position = UDim2.new(0, 0, 0, 35)
-ScanBtn.BackgroundColor3 = Color3.fromRGB(180, 20, 30)
-ScanBtn.Text = "🔍 إعادة فحص واكتشاف ريموتات شات الماب تلقائياً"
-ScanBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ScanBtn.Font = Enum.Font.BuilderSansBold
-ScanBtn.TextSize = 12
-ScanBtn.Parent = RemotesPage
-local sbc = Instance.new("UICorner", ScanBtn) sbc.CornerRadius = UDim.new(0, 6)
-
-local StatusLabel = Instance.new("TextLabel")
-StatusLabel.Size = UDim2.new(1, 0, 0, 45)
-StatusLabel.Position = UDim2.new(0, 0, 0, 78)
-StatusLabel.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-StatusLabel.Text = "الريموتات المكتشفة حالياً: " .. tostring(#CustomChatRemotes)
-StatusLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-StatusLabel.Font = Enum.Font.BuilderSansBold
-StatusLabel.TextSize = 11
-StatusLabel.Parent = RemotesPage
-local stc = Instance.new("UICorner", StatusLabel) stc.CornerRadius = UDim.new(0, 6)
-
-ScanBtn.MouseButton1Click:Connect(function()
-    ScanForCustomChatRemotes()
-    StatusLabel.Text = "✅ تم الفحص! عدد الريموتات المكتشفة: " .. tostring(#CustomChatRemotes)
-end)
-
-local SpyBtn = Instance.new("TextButton")
-SpyBtn.Size = UDim2.new(1, 0, 0, 36)
-SpyBtn.Position = UDim2.new(0, 0, 0, 130)
-SpyBtn.BackgroundColor3 = Color3.fromRGB(20, 8, 12)
-SpyBtn.Text = "🕵️ تشغيل SimpleSpy (لمعرفة اسم ريموت الشات فوراً)"
-SpyBtn.TextColor3 = Color3.fromRGB(255, 70, 80)
-SpyBtn.Font = Enum.Font.BuilderSansBold
-SpyBtn.TextSize = 12
-SpyBtn.Parent = RemotesPage
-local spc = Instance.new("UICorner", SpyBtn) spc.CornerRadius = UDim.new(0, 6)
-local sps = Instance.new("UIStroke", SpyBtn) sps.Color = Color3.fromRGB(180, 20, 30)
-
-SpyBtn.MouseButton1Click:Connect(function()
-    pcall(function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/7Grant9/SimpleSpy/main/SimpleSpySource.lua"))()
-    end)
 end)
