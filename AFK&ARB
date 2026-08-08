@@ -1,0 +1,191 @@
+-- [[ إعدادات النظام ]] --
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+-- دالة عشان تجيب الريموت سواء كانت الأداة في الشنطة أو ماسكها بيدك
+local function getRemote()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local teddy = character:FindFirstChild("Teddy") or LocalPlayer.Backpack:FindFirstChild("Teddy")
+    
+    if teddy and teddy:FindFirstChild("BounceEvent") then
+        return teddy.BounceEvent
+    end
+    return nil
+end
+
+-- [[ تصميم الواجهة ]] --
+local CoreGui = game:GetService("CoreGui")
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "MonsterSpammer"
+ScreenGui.Parent = CoreGui
+
+-- الدائرة السوداء لفتح القائمة
+local OpenButton = Instance.new("TextButton")
+OpenButton.Size = UDim2.new(0, 50, 0, 50)
+OpenButton.Position = UDim2.new(0, 20, 0, 20)
+OpenButton.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+OpenButton.Text = "افتح"
+OpenButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+OpenButton.Font = Enum.Font.GothamBold
+OpenButton.TextSize = 14
+OpenButton.Parent = ScreenGui
+
+local OpenCorner = Instance.new("UICorner")
+OpenCorner.CornerRadius = UDim.new(1, 0)
+OpenCorner.Parent = OpenButton
+
+local OpenStroke = Instance.new("UIStroke")
+OpenStroke.Color = Color3.fromRGB(255, 0, 0)
+OpenStroke.Thickness = 2
+OpenStroke.Parent = OpenButton
+
+-- القائمة الرئيسية
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, 450, 0, 250)
+MainFrame.Position = UDim2.new(0.5, -225, 0.5, -125)
+MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = MainFrame
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(255, 0, 0)
+MainStroke.Thickness = 3
+MainStroke.Parent = MainFrame
+
+-- العنوان
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0, 30)
+Title.BackgroundTransparency = 1
+Title.Text = "🔥 أداة الوحش لنسخ الأوامر 🔥"
+Title.TextColor3 = Color3.fromRGB(255, 0, 0)
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 18
+Title.Parent = MainFrame
+
+-- مربع كتابة اسم اللاعب المستهدف
+local TargetBox = Instance.new("TextBox")
+TargetBox.Size = UDim2.new(0, 250, 0, 40)
+TargetBox.Position = UDim2.new(0, 180, 0, 50)
+TargetBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+TargetBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TargetBox.PlaceholderText = "اكتب اسم اللاعب المستهدف هنا..."
+TargetBox.Font = Enum.Font.GothamBold
+TargetBox.TextSize = 14
+TargetBox.Parent = MainFrame
+
+local BoxCorner = Instance.new("UICorner")
+BoxCorner.CornerRadius = UDim.new(0, 5)
+BoxCorner.Parent = TargetBox
+
+local BoxStroke = Instance.new("UIStroke")
+BoxStroke.Color = Color3.fromRGB(255, 0, 0)
+BoxStroke.Parent = TargetBox
+
+-- لوحة الأزرار
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 150, 1, -40)
+Sidebar.Position = UDim2.new(0, 10, 0, 40)
+Sidebar.BackgroundTransparency = 1
+Sidebar.Parent = MainFrame
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = Sidebar
+UIListLayout.Padding = UDim.new(0, 10)
+
+local function createButton(name, text, parent)
+    local btn = Instance.new("TextButton")
+    btn.Name = name
+    btn.Size = UDim2.new(1, 0, 0, 35)
+    btn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    btn.TextColor3 = Color3.fromRGB(255, 0, 0)
+    btn.Text = text
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
+    btn.Parent = parent
+    
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 5)
+    corner.Parent = btn
+    
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(255, 0, 0)
+    stroke.Parent = btn
+    return btn
+end
+
+local ModBtn = createButton("ModBtn", "مشرف", Sidebar)
+local HeadAdminBtn = createButton("HeadAdminBtn", "هيد ادمن", Sidebar)
+local MysteryBtn = createButton("MysteryBtn", "غامض", Sidebar)
+local StopBtn = createButton("StopBtn", "إيقاف السبام 🛑", Sidebar)
+StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StopBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+
+-- [[ الأوامر ]] --
+local Commands = {
+    Mod = "@cmdbar [TARGET] @logs [TARGET] @re [TARGET] @kill [TARGET] @nv [TARGET] @ice [TARGET] @jc [TARGET] @paint [TARGET] @worm [TARGET] @char [TARGET] c7v @tp [TARGET]",
+    HeadAdminAndMystery = "?EXPLODE [TARGET] ?WARP [TARGET] ?JAIL [TARGET] ?ICE [TARGET] ?LOOPWARF [TARGET] ?LOGS [TARGET] ?CLOGS [TARGET] ?CHATLOGS [TARGET] ?NV [TARGET] ?CMDBAR [TARGET] ?CHAR [TARGET] MIR' ?ALERT [TARGET] ?AURA [TARGET] ?EXPLODE"
+}
+
+-- [[ نظام السرعة المجنونة (السبام) ]] --
+local spamConnection = nil
+
+local function StartSpam(commandTemplate)
+    -- إيقاف أي سبام شغال
+    if spamConnection then
+        spamConnection:Disconnect()
+        spamConnection = nil
+    end
+    
+    local targetName = TargetBox.Text
+    if targetName == "" then
+        targetName = "Player"
+    end
+    
+    local finalCommand = string.gsub(commandTemplate, "%[TARGET%]", targetName)
+    
+    -- جلب الريموت الجديد
+    local chatRemote = getRemote()
+    if not chatRemote then
+        warn("⚠️ السكربت يقولك: مالقيت أداة Teddy أو الريموت BounceEvent!")
+        return
+    end
+    
+    -- تشغيل السرعة
+    spamConnection = RunService.Heartbeat:Connect(function()
+        pcall(function()
+            chatRemote:FireServer(finalCommand)
+        end)
+    end)
+end
+
+-- [[ ربط الأزرار ]] --
+ModBtn.MouseButton1Click:Connect(function()
+    StartSpam(Commands.Mod)
+end)
+
+HeadAdminBtn.MouseButton1Click:Connect(function()
+    StartSpam(Commands.HeadAdminAndMystery)
+end)
+
+MysteryBtn.MouseButton1Click:Connect(function()
+    StartSpam(Commands.HeadAdminAndMystery)
+end)
+
+StopBtn.MouseButton1Click:Connect(function()
+    if spamConnection then
+        spamConnection:Disconnect()
+        spamConnection = nil
+    end
+end)
+
+-- فتح وإغلاق القائمة
+OpenButton.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
