@@ -1,7 +1,9 @@
--- [[ 🔴 AFK&ARB V5 - VIP EDITION 🔴 ]] --
+-- [[ 🔴 AFK&ARB VIP V6 - ULTIMATE FIXED EDITION 🔴 ]] --
 
 local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
+local TextChatService = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local LocalPlayer = Players.LocalPlayer
 
 -- [[ 1. نظام الحماية (Whitelist) ]] --
@@ -15,35 +17,13 @@ if not WhitelistedPlayers[LocalPlayer.Name] then
     return
 end
 
--- [[ 2. صائد الريموتات الذكي ]] --
-local DetectedRemotes = {}
-local function ScanForRemotes()
-    table.clear(DetectedRemotes)
-    local scanAreas = { game:GetService("ReplicatedStorage"), LocalPlayer.Backpack, LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait() }
-    for _, area in ipairs(scanAreas) do
-        for _, obj in pairs(area:GetDescendants()) do
-            if obj:IsA("RemoteEvent") then
-                local isDefaultChat = false
-                pcall(function()
-                    if obj:IsDescendantOf(game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")) then
-                        isDefaultChat = true
-                    end
-                end)
-                if not isDefaultChat then
-                    table.insert(DetectedRemotes, obj)
-                end
-            end
-        end
-    end
-end
-
--- [[ 3. إعدادات الواجهة (GUI) ]] --
+-- [[ 2. إعدادات الواجهة (GUI) ]] --
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "AFK_ARB_VIP"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
--- زر الفتح
+-- زر الفتح والإغلاق
 local OpenBtn = Instance.new("TextButton")
 OpenBtn.Size = UDim2.new(0, 60, 0, 60)
 OpenBtn.Position = UDim2.new(0, 20, 0, 20)
@@ -72,7 +52,7 @@ Instance.new("UIStroke", MainFrame).Thickness = 3
 
 OpenBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
--- [[ 4. الحركة الجمالية (الهيدر والصور) ]] --
+-- [[ 3. الحركة الجمالية (العنوان وصور اللاعبين) ]] --
 local HeaderFrame = Instance.new("Frame")
 HeaderFrame.Size = UDim2.new(1, 0, 0, 100)
 HeaderFrame.BackgroundTransparency = 1
@@ -101,7 +81,7 @@ RightAvatar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 RightAvatar.Parent = HeaderFrame
 Instance.new("UICorner", RightAvatar).CornerRadius = UDim.new(1, 0)
 
--- جلب صور اللاعبين مباشرة من روبلوكس
+-- جلب صور السكنات تلقائياً
 task.spawn(function()
     pcall(function()
         local id1 = Players:GetUserIdFromNameAsync("azozh1500111")
@@ -120,9 +100,9 @@ Divider.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 Divider.BorderSizePixel = 0
 Divider.Parent = MainFrame
 
--- [[ 5. المتغيرات والأوامر ]] --
+-- [[ 4. تعريف الأوامر الثابتة ]] --
 local selectedPlayer = LocalPlayer.Name
-local selectedMode = nil -- يحفظ الاختيار (مشرف أو هيد ادمن)
+local selectedMode = nil 
 local isSending = false
 
 local Commands = {
@@ -130,7 +110,7 @@ local Commands = {
     AdminMystery = "?EXPLODE [TARGET] ?WARP [TARGET] ?JAIL [TARGET] ?ICE [TARGET] ?LOOPWARF [TARGET] ?LOGS [TARGET] ?CLOGS [TARGET] ?CHATLOGS [TARGET] ?NV [TARGET] ?CMDBAR [TARGET] ?CHAR [TARGET] MIR' ?ALERT [TARGET] ?AURA [TARGET] ?EXPLODE"
 }
 
--- [[ 6. اختيار اللاعبين (اليمين) ]] --
+-- [[ 5. اختيار اللاعبين (اليمين) ]] --
 local PlayerFrame = Instance.new("Frame")
 PlayerFrame.Size = UDim2.new(0, 300, 0, 240)
 PlayerFrame.Position = UDim2.new(1, -320, 0, 120)
@@ -179,7 +159,7 @@ RefreshPlayers()
 Players.PlayerAdded:Connect(RefreshPlayers)
 Players.PlayerRemoving:Connect(RefreshPlayers)
 
--- [[ 7. اختيار نوع النسخ (اليسار) ]] --
+-- [[ 6. اختيار نوع النسخ (اليسار) ]] --
 local ModesFrame = Instance.new("Frame")
 ModesFrame.Size = UDim2.new(0, 320, 0, 200)
 ModesFrame.Position = UDim2.new(0, 20, 0, 140)
@@ -221,7 +201,6 @@ Instance.new("UICorner", AdminBtn).CornerRadius = UDim.new(0, 8)
 local AdminStroke = Instance.new("UIStroke", AdminBtn)
 AdminStroke.Color = Color3.fromRGB(255, 0, 0)
 
--- دالة التحديد وتغيير اللون
 local function SelectMode(mode)
     selectedMode = mode
     ModBtn.BackgroundColor3 = (mode == "Mod") and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(40, 15, 15)
@@ -234,59 +213,60 @@ end
 ModBtn.MouseButton1Click:Connect(function() SelectMode("Mod") end)
 AdminBtn.MouseButton1Click:Connect(function() SelectMode("AdminMystery") end)
 
--- [[ 8. أزرار التشغيل والإيقاف (تحت) ]] --
-local StartBtn = Instance.new("TextButton")
-StartBtn.Size = UDim2.new(0, 300, 0, 55)
-StartBtn.Position = UDim2.new(0, 20, 0, 400)
-StartBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) -- أخضر
-StartBtn.Text = "بدء النسخ ▶️"
-StartBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StartBtn.Font = Enum.Font.GothamBlack
-StartBtn.TextSize = 22
-StartBtn.Parent = MainFrame
-Instance.new("UICorner", StartBtn).CornerRadius = UDim.new(0, 10)
+-- [[ 7. زر موحد للتشغيل والإيقاف (Toggle Button) ]] --
+local ToggleActionBtn = Instance.new("TextButton")
+ToggleActionBtn.Size = UDim2.new(0, 660, 0, 55)
+ToggleActionBtn.Position = UDim2.new(0, 20, 0, 400)
+ToggleActionBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) -- أخضر بالبداية
+ToggleActionBtn.Text = "بدء النسخ ▶️"
+ToggleActionBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleActionBtn.Font = Enum.Font.GothamBlack
+ToggleActionBtn.TextSize = 22
+ToggleActionBtn.Parent = MainFrame
+Instance.new("UICorner", ToggleActionBtn).CornerRadius = UDim.new(0, 10)
 
-local StopBtn = Instance.new("TextButton")
-StopBtn.Size = UDim2.new(0, 300, 0, 55)
-StopBtn.Position = UDim2.new(1, -320, 0, 400)
-StopBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0) -- أحمر
-StopBtn.Text = "توقيف النسخ 🛑"
-StopBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StopBtn.Font = Enum.Font.GothamBlack
-StopBtn.TextSize = 22
-StopBtn.Parent = MainFrame
-Instance.new("UICorner", StopBtn).CornerRadius = UDim.new(0, 10)
-
--- [[ 9. نظام الإرسال المستمر ]] --
-StartBtn.MouseButton1Click:Connect(function()
-    if not selectedMode then
-        ModeTitle.Text = "⚠️ الرجاء تحديد نوع النسخ أولاً!"
-        task.wait(2)
-        ModeTitle.Text = "اختر نوع النسخ:"
-        return
-    end
-    
-    isSending = false
-    task.wait(0.1)
-    isSending = true
-    
-    -- تجهيز الأمر وتبديل [TARGET] باسم اللاعب المختار
-    local finalCmd = string.gsub(Commands[selectedMode], "%[TARGET%]", selectedPlayer)
-    
-    ScanForRemotes()
-    
-    task.spawn(function()
-        while isSending do
-            for _, remote in ipairs(DetectedRemotes) do
-                pcall(function()
-                    remote:FireServer(finalCmd)
-                end)
-            end
-            task.wait(1) -- سرعة الإرسال (كل ثانية)
+-- دالة إرسال الشات المضمونة (تحل مشكلة عدم الإرسال)
+local function SendChatMessage(text)
+    pcall(function()
+        -- تجربة النظام الحديث للشات
+        if TextChatService.TextChannels:FindFirstChild("RBXGeneral") then
+            TextChatService.TextChannels.RBXGeneral:SendAsync(text)
         end
     end)
-end)
+    pcall(function()
+        -- تجربة نظام الشات القديم والريموتات الاحتياطية
+        ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(text, "All")
+    end)
+end
 
-StopBtn.MouseButton1Click:Connect(function()
-    isSending = false
+-- التحكم بالزر الموحد
+ToggleActionBtn.MouseButton1Click:Connect(function()
+    if not isSending then
+        -- التحقق من اختيار النوع قبل التشغيل
+        if not selectedMode then
+            ModeTitle.Text = "⚠️ اختر نوع النسخ أولاً!"
+            task.wait(2)
+            ModeTitle.Text = "اختر نوع النسخ:"
+            return
+        end
+        
+        -- تشغيل العمليات
+        isSending = true
+        ToggleActionBtn.Text = "توقيف النسخ 🛑"
+        ToggleActionBtn.BackgroundColor3 = Color3.fromRGB(180, 0, 0) -- يتحول للأحمر
+        
+        local finalCmd = string.gsub(Commands[selectedMode], "%[TARGET%]", selectedPlayer)
+        
+        task.spawn(function()
+            while isSending do
+                SendChatMessage(finalCmd)
+                task.wait(1) -- السرعة: رسالة كل ثانية
+            end
+        end)
+    else
+        -- إيقاف العمليات
+        isSending = false
+        ToggleActionBtn.Text = "بدء النسخ ▶️"
+        ToggleActionBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0) -- يرجع أخضر
+    end
 end)
