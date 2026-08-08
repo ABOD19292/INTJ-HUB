@@ -16,7 +16,7 @@ end
 
 -- [[ إنشاء الواجهة الرئيسيّة ]] --
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MonsterSpammerV2"
+ScreenGui.Name = "AFK&ARB"
 ScreenGui.Parent = CoreGui
 
 -- الدائرة السوداء للفتح والإغلاق
