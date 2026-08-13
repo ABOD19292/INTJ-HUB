@@ -6,140 +6,672 @@
         \/          \/         \/    \/                \/     \/     \/                  
 ~ Coded & Modified by: AB ~ ]]--
 
-local v0 = tonumber;
-local v1 = string.byte;
-local v2 = string.char;
-local v3 = string.sub;
-local v4 = string.gsub;
-local v5 = string.rep;
-local v6 = table.concat;
-local v7 = table.insert;
-local v8 = math.ldexp;
-local v9 = getfenv or function() return _ENV; end;
-local v10 = setmetatable;
-local v11 = pcall;
-local v12 = select;
-local v13 = unpack or table.unpack;
-local v14 = tonumber;
+local Players = game:GetService("Players")
 
-local function v15(v16, v17, ...)
-    local v18 = 1;
-    local v19;
-    v16 = v4(v3(v16, 5), "..", function(v30)
-        if (v1(v30, 2) == 81) then
-            v19 = v0(v3(v30, 1, 1));
-            return "";
-        else
-            local v91 = v2(v0(v30, 16));
-            if v19 then
-                local v113 = v5(v91, v19);
-                v19 = nil;
-                return v113;
-            else
-                return v91;
-            end
-        end
-    end);
-    
-    local function v20(v31, v32, v33)
-        if v33 then
-            local v92 = (v31 / ((5 - 3) ^ (v32 - 1272 + 226 + 1044 - 4 + 3))) % ((3 - 1) ^ (((v33 - 1) - (v32 - 119 + 32 + 85 - 1)) + (608 + 12 - 555 - 64)));
-            return v92 - (v92 % (1638 - 1523 - 114));
-        else
-            local v93 = (933 - 857 - 74) ^ (v32 - 569 + 367 + 201);
-            return (((v31 % (v93 + v93)) >= v93) and 1) or 0;
-        end
-    end
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
-    local function v21()
-        local v34 = 0;
-        local v35;
-        while true do
-            if (v34 == 1) then return v35; end
-            if (v34 == 0) then
-                v35 = v1(v16, v18, v18);
-                v18 = v18 + 88;
-                v34 = 1;
-            end
-        end
-    end
+--------------------------------------------------------
+-- CONFIGURATION
+--------------------------------------------------------
 
-    local function v22()
-        local v36 = 0;
-        local v37, v38;
-        while true do
-            if (v36 == 1) then return (v38 * 433) + v37; end
-            if (v36 == 0) then
-                v37, v38 = v1(v16, v18, v18 + 2);
-                v18 = v18 + 87;
-                v36 = 1;
-            end
-        end
-    end
+local Config = {
+	MessagesPerSecond = 10,
+	Duration = 10,
+	RateLimit = 5,
+	RateWindow = 1,
+}
 
-    local function v23()
-        local v39 = 0;
-        local v40, v41, v42, v43;
-        while true do
-            if (v39 == 1) then return (v43 * 16777354) + (v42 * 65536) + (v41 * 256) + v40; end
-            if (v39 == 0) then
-                v40, v41, v42, v43 = v1(v16, v18, v18 + 3);
-                v18 = v18 + 4;
-                v39 = 1;
-            end
-        end
-    end
+--------------------------------------------------------
+-- STATE
+--------------------------------------------------------
 
-    local function v24()
-        local v44 = v23();
-        local v45 = v23();
-        local v46 = 1;
-        local v47 = (v20(v45, 1, 28) * (2 ^ 32)) + v44;
-        local v48 = v20(v45, 29, 31);
-        local v49 = ((v20(v45, 32) == 1) and -1) or 1;
-        if (v48 == 0) then
-            if (v47 == 0) then return v49 * 0; else v48 = 1; v46 = 0; end
-        elseif (v48 == 2047) then
-            return ((v47 == 0) and (v49 * (1 / 0))) or (v49 * (0 / 0));
-        end
-        return v8(v49, v48 - 1023) * (v46 + (v47 / (2 ^ 52)));
-    end
+local State = {
+	Running = false,
+	StopRequested = false,
 
-    local function v25(v50)
-        if not v50 then
-            v50 = v23();
-            if (v50 == 0) then return ""; end
-        end
-        local v51 = v3(v16, v18, v18 + v50 - 1);
-        v18 = v18 + v50;
-        local v52 = {};
-        for v68 = 1, #v51 do
-            v52[v68] = v2(v1(v3(v51, v68, v68)));
-        end
-        return v6(v52);
-    end
+	Generated = 0,
+	Accepted = 0,
+	Blocked = 0,
+	Errors = 0,
 
-    local v26 = v23;
-    local function v27(...) return {...}, v12("#", ...); end
-    
-    local function v28()
-        return function(...) end
-    end
+	StartTime = 0,
+	EndTime = 0,
 
-    local v55, v56, v57 = {}, {}, {};
-    local v58 = {v55, v56, nil, v57};
-    local v59 = v23();
-    
-    for v70 = 1, v59 do
-        v60 = v70;
-    end
-    return v58;
+	MessageTimes = {},
+}
+
+--------------------------------------------------------
+-- UI HELPERS
+--------------------------------------------------------
+
+local function create(className, properties, parent)
+	local object = Instance.new(className)
+
+	for property, value in pairs(properties) do
+		object[property] = value
+	end
+
+	object.Parent = parent
+
+	return object
 end
 
-local function v29(v62, v63, v64)
-    return function(...)
-        return "AB_UI_Loaded_Successfully"
-    end
+--------------------------------------------------------
+-- GUI
+--------------------------------------------------------
+
+local gui = create("ScreenGui", {
+	Name = "AB_ChatLoadTester",
+	ResetOnSpawn = false,
+	ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+}, playerGui)
+
+local main = create("Frame", {
+	Name = "Main",
+	Size = UDim2.fromOffset(520, 470),
+	Position = UDim2.fromScale(0.5, 0.5),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	BackgroundColor3 = Color3.fromRGB(18, 20, 26),
+	BorderSizePixel = 0,
+}, gui)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 14),
+}, main)
+
+create("UIStroke", {
+	Color = Color3.fromRGB(55, 60, 75),
+	Thickness = 1,
+}, main)
+
+--------------------------------------------------------
+-- TITLE
+--------------------------------------------------------
+
+create("TextLabel", {
+	Size = UDim2.new(1, -40, 0, 40),
+	Position = UDim2.fromOffset(20, 15),
+	BackgroundTransparency = 1,
+	Text = "AB LOAD TESTER",
+	TextColor3 = Color3.fromRGB(255, 255, 255),
+	TextSize = 23,
+	Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, main)
+
+create("TextLabel", {
+	Size = UDim2.new(1, -40, 0, 25),
+	Position = UDim2.fromOffset(20, 50),
+	BackgroundTransparency = 1,
+	Text = "AB testing & rate-limit simulator",
+	TextColor3 = Color3.fromRGB(145, 150, 165),
+	TextSize = 13,
+	Font = Enum.Font.Gotham,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, main)
+
+--------------------------------------------------------
+-- STATUS
+--------------------------------------------------------
+
+local status = create("TextLabel", {
+	Size = UDim2.new(1, -40, 0, 30),
+	Position = UDim2.fromOffset(20, 85),
+	BackgroundTransparency = 1,
+	Text = "● AB READY",
+	TextColor3 = Color3.fromRGB(80, 220, 130),
+	TextSize = 14,
+	Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, main)
+
+--------------------------------------------------------
+-- SETTINGS
+--------------------------------------------------------
+
+local settingsFrame = create("Frame", {
+	Size = UDim2.fromOffset(225, 155),
+	Position = UDim2.fromOffset(20, 120),
+	BackgroundColor3 = Color3.fromRGB(25, 28, 36),
+	BorderSizePixel = 0,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 10),
+}, settingsFrame)
+
+create("TextLabel", {
+	Size = UDim2.new(1, -20, 0, 25),
+	Position = UDim2.fromOffset(10, 8),
+	BackgroundTransparency = 1,
+	Text = "AB SETTINGS",
+	TextColor3 = Color3.fromRGB(220, 225, 235),
+	TextSize = 13,
+	Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, settingsFrame)
+
+local rateBox = create("TextBox", {
+	Size = UDim2.fromOffset(95, 30),
+	Position = UDim2.fromOffset(115, 45),
+	BackgroundColor3 = Color3.fromRGB(35, 39, 50),
+	TextColor3 = Color3.fromRGB(255, 255, 255),
+	PlaceholderText = "10",
+	Text = tostring(Config.MessagesPerSecond),
+	TextSize = 14,
+	Font = Enum.Font.Gotham,
+	ClearTextOnFocus = false,
+}, settingsFrame)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 6),
+}, rateBox)
+
+create("TextLabel", {
+	Size = UDim2.fromOffset(100, 30),
+	Position = UDim2.fromOffset(10, 45),
+	BackgroundTransparency = 1,
+	Text = "Rate / sec",
+	TextColor3 = Color3.fromRGB(170, 175, 190),
+	TextSize = 13,
+	Font = Enum.Font.Gotham,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, settingsFrame)
+
+local durationBox = create("TextBox", {
+	Size = UDim2.fromOffset(95, 30),
+	Position = UDim2.fromOffset(115, 82),
+	BackgroundColor3 = Color3.fromRGB(35, 39, 50),
+	TextColor3 = Color3.fromRGB(255, 255, 255),
+	PlaceholderText = "10",
+	Text = tostring(Config.Duration),
+	TextSize = 14,
+	Font = Enum.Font.Gotham,
+	ClearTextOnFocus = false,
+}, settingsFrame)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 6),
+}, durationBox)
+
+create("TextLabel", {
+	Size = UDim2.fromOffset(100, 30),
+	Position = UDim2.fromOffset(10, 82),
+	BackgroundTransparency = 1,
+	Text = "Duration",
+	TextColor3 = Color3.fromRGB(170, 175, 190),
+	TextSize = 13,
+	Font = Enum.Font.Gotham,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, settingsFrame)
+
+local limitBox = create("TextBox", {
+	Size = UDim2.fromOffset(95, 30),
+	Position = UDim2.fromOffset(115, 119),
+	BackgroundColor3 = Color3.fromRGB(35, 39, 50),
+	TextColor3 = Color3.fromRGB(255, 255, 255),
+	PlaceholderText = "5",
+	Text = tostring(Config.RateLimit),
+	TextSize = 14,
+	Font = Enum.Font.Gotham,
+	ClearTextOnFocus = false,
+}, settingsFrame)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 6),
+}, limitBox)
+
+create("TextLabel", {
+	Size = UDim2.fromOffset(100, 30),
+	Position = UDim2.fromOffset(10, 119),
+	BackgroundTransparency = 1,
+	Text = "Rate limit",
+	TextColor3 = Color3.fromRGB(170, 175, 190),
+	TextSize = 13,
+	Font = Enum.Font.Gotham,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, settingsFrame)
+
+--------------------------------------------------------
+-- STATISTICS
+--------------------------------------------------------
+
+local statsFrame = create("Frame", {
+	Size = UDim2.fromOffset(235, 155),
+	Position = UDim2.fromOffset(265, 120),
+	BackgroundColor3 = Color3.fromRGB(25, 28, 36),
+	BorderSizePixel = 0,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 10),
+}, statsFrame)
+
+create("TextLabel", {
+	Size = UDim2.new(1, -20, 0, 25),
+	Position = UDim2.fromOffset(10, 8),
+	BackgroundTransparency = 1,
+	Text = "AB STATISTICS",
+	TextColor3 = Color3.fromRGB(220, 225, 235),
+	TextSize = 13,
+	Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, statsFrame)
+
+local statsLabel = create("TextLabel", {
+	Size = UDim2.new(1, -20, 1, -38),
+	Position = UDim2.fromOffset(10, 35),
+	BackgroundTransparency = 1,
+	TextColor3 = Color3.fromRGB(190, 195, 210),
+	TextSize = 13,
+	Font = Enum.Font.Code,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	TextYAlignment = Enum.TextYAlignment.Top,
+	Text = "",
+}, statsFrame)
+
+--------------------------------------------------------
+-- LOG
+--------------------------------------------------------
+
+create("TextLabel", {
+	Size = UDim2.new(1, -40, 0, 25),
+	Position = UDim2.fromOffset(20, 285),
+	BackgroundTransparency = 1,
+	Text = "AB LOG",
+	TextColor3 = Color3.fromRGB(220, 225, 235),
+	TextSize = 13,
+	Font = Enum.Font.GothamBold,
+	TextXAlignment = Enum.TextXAlignment.Left,
+}, main)
+
+local logFrame = create("ScrollingFrame", {
+	Size = UDim2.new(1, -40, 0, 75),
+	Position = UDim2.fromOffset(20, 312),
+	BackgroundColor3 = Color3.fromRGB(12, 14, 18),
+	BorderSizePixel = 0,
+	CanvasSize = UDim2.new(),
+	ScrollBarThickness = 4,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 8),
+}, logFrame)
+
+local logLabel = create("TextLabel", {
+	Size = UDim2.new(1, -15, 0, 0),
+	Position = UDim2.fromOffset(8, 5),
+	AutomaticSize = Enum.AutomaticSize.Y,
+	BackgroundTransparency = 1,
+	Text = "AB system ready...",
+	TextColor3 = Color3.fromRGB(135, 200, 255),
+	TextSize = 12,
+	Font = Enum.Font.Code,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	TextYAlignment = Enum.TextYAlignment.Top,
+}, logFrame)
+
+--------------------------------------------------------
+-- BUTTONS
+--------------------------------------------------------
+
+local startButton = create("TextButton", {
+	Size = UDim2.fromOffset(150, 42),
+	Position = UDim2.fromOffset(20, 400),
+	BackgroundColor3 = Color3.fromRGB(45, 175, 95),
+	Text = "START AB",
+	TextColor3 = Color3.new(1, 1, 1),
+	TextSize = 14,
+	Font = Enum.Font.GothamBold,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 8),
+}, startButton)
+
+local stopButton = create("TextButton", {
+	Size = UDim2.fromOffset(150, 42),
+	Position = UDim2.fromOffset(185, 400),
+	BackgroundColor3 = Color3.fromRGB(190, 65, 70),
+	Text = "STOP",
+	TextColor3 = Color3.new(1, 1, 1),
+	TextSize = 14,
+	Font = Enum.Font.GothamBold,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 8),
+}, stopButton)
+
+local resetButton = create("TextButton", {
+	Size = UDim2.fromOffset(150, 42),
+	Position = UDim2.fromOffset(350, 400),
+	BackgroundColor3 = Color3.fromRGB(65, 85, 130),
+	Text = "RESET",
+	TextColor3 = Color3.new(1, 1, 1),
+	TextSize = 14,
+	Font = Enum.Font.GothamBold,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(0, 8),
+}, resetButton)
+
+--------------------------------------------------------
+-- AB LOGO BUTTON (Modified Green Circle to AB)
+--------------------------------------------------------
+
+local abLogoButton = create("TextButton", {
+	Size = UDim2.fromOffset(36, 36),
+	Position = UDim2.new(1, -56, 0, 17),
+	BackgroundColor3 = Color3.fromRGB(45, 175, 95),
+	Text = "AB",
+	TextColor3 = Color3.new(1, 1, 1),
+	TextSize, TextSize = 14, 14,
+	Font = Enum.Font.GothamBold,
+}, main)
+
+create("UICorner", {
+	CornerRadius = UDim.new(1, 0), -- Makes it a perfect circle
+}, abLogoButton)
+
+abLogoButton.MouseButton1Click:Connect(function()
+	addLog("[AB] Logo clicked! System active.", Color3.fromRGB(80, 220, 130))
+end)
+
+--------------------------------------------------------
+-- LOG SYSTEM
+--------------------------------------------------------
+
+local logs = {}
+
+local function addLog(message, color)
+	table.insert(logs, message)
+
+	if #logs > 30 then
+		table.remove(logs, 1)
+	end
+
+	logLabel.Text = table.concat(logs, "\n")
+	logLabel.TextColor3 = color or Color3.fromRGB(135, 200, 255)
+
+	task.defer(function()
+		logFrame.CanvasPosition = Vector2.new(
+			0,
+			math.max(0, logLabel.AbsoluteSize.Y - logFrame.AbsoluteSize.Y)
+		)
+	end)
 end
 
-return v15("LOL!043Q00030A3Q006C6F6164737472696E6703043Q0067616D6503073Q00482Q747047657403AA3Q00682Q7470733A2Q2F7261772E67697468756275736572636F6E74656E742E636F6D2F41422Q4875622D41422Q736372697074732F6D61696E2F524541444D452E6D6400", v9(), ...);
+--------------------------------------------------------
+-- STATISTICS UPDATE
+--------------------------------------------------------
+
+local function updateStats()
+	local elapsed = 0
+
+	if State.StartTime > 0 then
+		elapsed = os.clock() - State.StartTime
+	end
+
+	local throughput = 0
+
+	if elapsed > 0 then
+		throughput = State.Generated / elapsed
+	end
+
+	local successRate = 0
+
+	if State.Generated > 0 then
+		successRate =
+			(State.Accepted / State.Generated) * 100
+	end
+
+	statsLabel.Text = string.format(
+		"Generated : %d\n" ..
+		"Accepted  : %d\n" ..
+		"Blocked   : %d\n" ..
+		"Errors    : %d\n" ..
+		"Success   : %.1f%%\n" ..
+		"Speed     : %.2f/s",
+		State.Generated,
+		State.Accepted,
+		State.Blocked,
+		State.Errors,
+		successRate,
+		throughput
+	)
+end
+
+--------------------------------------------------------
+-- RATE LIMITER
+--------------------------------------------------------
+
+local function cleanupMessageTimes()
+	local now = os.clock()
+
+	for i = #State.MessageTimes, 1, -1 do
+		if now - State.MessageTimes[i] > Config.RateWindow then
+			table.remove(State.MessageTimes, i)
+		end
+	end
+end
+
+local function checkRateLimit()
+	cleanupMessageTimes()
+
+	if #State.MessageTimes >= Config.RateLimit then
+		return false
+	end
+
+	table.insert(State.MessageTimes, os.clock())
+
+	return true
+end
+
+--------------------------------------------------------
+-- RESET
+--------------------------------------------------------
+
+local function reset()
+	State.Running = false
+	State.StopRequested = false
+
+	State.Generated = 0
+	State.Accepted = 0
+	State.Blocked = 0
+	State.Errors = 0
+
+	State.StartTime = 0
+	State.EndTime = 0
+
+	table.clear(State.MessageTimes)
+	table.clear(logs)
+
+	status.Text = "● AB READY"
+	status.TextColor3 = Color3.fromRGB(80, 220, 130)
+
+	startButton.Text = "START AB"
+
+	addLog("AB System reset.")
+
+	updateStats()
+end
+
+--------------------------------------------------------
+-- READ SETTINGS
+--------------------------------------------------------
+
+local function readSettings()
+	local rate = tonumber(rateBox.Text)
+	local duration = tonumber(durationBox.Text)
+	local limit = tonumber(limitBox.Text)
+
+	if not rate or rate < 1 then
+		return false, "Invalid rate."
+	end
+
+	if not duration or duration < 1 then
+		return false, "Invalid duration."
+	end
+
+	if not limit or limit < 1 then
+		return false, "Invalid rate limit."
+	end
+
+	Config.MessagesPerSecond = math.clamp(rate, 1, 100)
+	Config.Duration = math.clamp(duration, 1, 300)
+	Config.RateLimit = math.clamp(limit, 1, 100)
+
+	rateBox.Text = tostring(Config.MessagesPerSecond)
+	durationBox.Text = tostring(Config.Duration)
+	limitBox.Text = tostring(Config.RateLimit)
+
+	return true
+end
+
+--------------------------------------------------------
+-- TEST
+--------------------------------------------------------
+
+local function runTest()
+	if State.Running then
+		return
+	end
+
+	local valid, errorMessage = readSettings()
+
+	if not valid then
+		addLog(errorMessage, Color3.fromRGB(255, 100, 100))
+		return
+	end
+
+	reset()
+
+	State.Running = true
+	State.StartTime = os.clock()
+
+	status.Text = "● AB RUNNING"
+	status.TextColor3 = Color3.fromRGB(255, 205, 75)
+
+	startButton.Text = "RUNNING..."
+
+	addLog("AB Test started.", Color3.fromRGB(100, 255, 150))
+
+	local interval = 1 / Config.MessagesPerSecond
+	local finishTime = os.clock() + Config.Duration
+
+	while State.Running and not State.StopRequested do
+		if os.clock() >= finishTime then
+			break
+		end
+
+		State.Generated += 1
+
+		local messageID = State.Generated
+
+		local success, accepted = pcall(function()
+			return checkRateLimit()
+		end)
+
+		if success then
+			if accepted then
+				State.Accepted += 1
+
+				addLog(
+					string.format(
+						"[AB ACCEPTED] Message #%d",
+						messageID
+					),
+					Color3.fromRGB(100, 220, 140)
+				)
+			else
+				State.Blocked += 1
+
+				addLog(
+					string.format(
+						"[AB RATE LIMIT] Message #%d",
+						messageID
+					),
+					Color3.fromRGB(255, 190, 70)
+				)
+			end
+		else
+			State.Errors += 1
+
+			addLog(
+				"[AB ERROR] Operation failed.",
+				Color3.fromRGB(255, 90, 90)
+			)
+		end
+
+		updateStats()
+
+		task.wait(interval)
+	end
+
+	State.EndTime = os.clock()
+	State.Running = false
+
+	if State.StopRequested then
+		status.Text = "● AB STOPPED"
+		status.TextColor3 = Color3.fromRGB(255, 120, 120)
+
+		addLog("AB Test stopped by user.")
+	else
+		status.Text = "● AB COMPLETED"
+		status.TextColor3 = Color3.fromRGB(80, 220, 130)
+
+		addLog("AB Test completed successfully.")
+	end
+
+	startButton.Text = "START AB"
+
+	updateStats()
+end
+
+--------------------------------------------------------
+-- STOP
+--------------------------------------------------------
+
+local function stopTest()
+	if not State.Running then
+		return
+	end
+
+	State.StopRequested = true
+	State.Running = false
+
+	status.Text = "● AB STOPPING..."
+	status.TextColor3 = Color3.fromRGB(255, 170, 70)
+
+	addLog("AB Stop requested.")
+end
+
+--------------------------------------------------------
+-- BUTTON EVENTS
+--------------------------------------------------------
+
+startButton.MouseButton1Click:Connect(function()
+	task.spawn(runTest)
+end)
+
+stopButton.MouseButton1Click:Connect(function`())
+	stopTest()
+end)
+
+resetButton.MouseButton1Click:Connect(function()
+	reset()
+end)
+
+--------------------------------------------------------
+-- INITIALIZATION
+--------------------------------------------------------
+
+reset()
+
+print("====================================")
+print(" AB Load Tester")
+print(" Loaded successfully.")
+print("====================================")
