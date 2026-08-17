@@ -1,12 +1,732 @@
 --[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Coded & Modified by: yassin_3mk033 & Abboud ~ 
+    ABOD Hub - Roblox UI Script
+    Tabs: نسخ (Copy) | تحكم (Control)
+]]
 
-]]--
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local v0=tonumber;local v1=string.byte;local v2=string.char;local v3=string.sub;local v4=string.gsub;local v5=string.rep;local v6=table.concat;local v7=table.insert;local v8=math.ldexp;local v9=getfenv or function() return _ENV;end ;local v10=setmetatable;local v11=pcall;local v12=select;local v13=unpack or table.unpack ;local v14=tonumber;local function v15(v16,v17,...) local v18=1;local v19;v16=v4(v3(v16,5),"..",function(v30) if (v1(v30,2)==81) then v19=v0(v3(v30,1,1));return "";else local v91=v2(v0(v30,16));if v19 then local v113=v5(v91,v19);v19=nil;return v113;else return v91;end end end);local function v20(v31,v32,v33) if v33 then local v92=(v31/((5 -3)^(v32-((1272 -(226 + 1044)) -(4 -3)))))%((3 -1)^(((v33-1) -(v32-((119 -(32 + 85)) -1))) + ((608 + 12) -(555 + 64)))) ;return v92-(v92%(1638 -(1523 + 114))) ;else local v93=(933 -(857 + 74))^(v32-(569 -(367 + 201))) ;return (((v31%(v93 + v93))>=v93) and (1 -(0 + 0))) or (1065 -((1025 -(892 + 65)) + 997)) ;end end local function v21() local v34=0 -(0 + 0) ;local v35;while true do if (v34==(1 -0)) then return v35;end if (v34==(0 -(0 -0))) then v35=v1(v16,v18,v18);v18=v18 + (351 -(87 + 263)) ;v34=(134 + 47) -(67 + 113) ;end end end local function v22() local v36=0 -0 ;local v37;local v38;while true do if (v36==(953 -(802 + 150))) then return (v38 * (689 -433)) + v37 ;end if (v36==(0 -0)) then v37,v38=v1(v16,v18,v18 + 2 + 0 );v18=v18 + (999 -(915 + 48 + 34)) ;v36=2 -1 ;end end end local function v23() local v39=0 -0 ;local v40;local v41;local v42;local v43;while true do if (v39==1) then return (v43 * (16778403 -(1069 + 118))) + (v42 * (148681 -83145)) + (v41 * ((1350 -(368 + 423)) -303)) + v40 ;end if (v39==(0 + 0)) then v40,v41,v42,v43=v1(v16,v18,v18 + 3 );v18=v18 + (6 -2) ;v39=1 + 0 ;end end end local function v24() local v44=v23();local v45=v23();local v46=3 -2 ;local v47=(v20(v45,1,38 -(10 + 8) ) * (2^(122 -90))) + v44 ;local v48=v20(v45,463 -(416 + (92 -66)) ,98 -67 );local v49=((v20(v45,14 + 18 )==(1 -0)) and  -((1298 -(814 + 45)) -(145 + 293))) or (431 -(44 + 386)) ;if (v48==0) then if (v47==(1486 -(998 + 488))) then return v49 * (0 + 0) ;else v48=1 + 0 ;v46=0;end elseif (v48==(2819 -(201 + 571))) then return ((v47==(1138 -(116 + (2517 -1495)))) and (v49 * ((4 -3)/(0 + 0)))) or (v49 * NaN) ;end return v8(v49,v48-1023 ) * (v46 + (v47/(2^(189 -(8 + 129))))) ;end local function v25(v50) local v51;if  not v50 then local v94=0;while true do if (v94==(0 + (0 -0))) then v50=v23();if (v50==0) then return "";end break;end end end v51=v3(v16,v18,(v18 + v50) -(886 -(261 + 624)) );v18=v18 + v50 ;local v52={};for v68=1424 -((2982 -2352) + 793) , #v51 do v52[v68]=v2(v1(v3(v51,v68,v68)));end return v6(v52);end local v26=v23;local function v27(...) return {...},v12("#",...);end local function v28() local v53=(function() return function(v95,v96,v97,v98,v99,v100,v101,v102,v103) local v104=(function() return 1749 -(1013 + 736) ;end)();local v95=(function() return;end)();local v96=(function() return;end)();while true do if (v104~=0) then else local v118=(function() return 0 + 0 ;end)();while true do if (v118==(2 -1)) then v104=(function() return 3 -2 ;end)();break;end if (v118==0) then v95=(function() return 0;end)();v96=(function() return nil;end)();v118=(function() return 1;end)();end end end if (v104==(868 -(550 + 317))) then while true do if (0~=v95) then else v96=(function() return v97();end)();if (v98(v96, #",", #"\\")~=(0 -0)) then else local v121=(function() return 0 -0 ;end)();local v122=(function() return;end)();local v123=(function() return;end)();local v124=(function() return;end)();local v125=(function() return;end)();while true do if (v121~=0) then else local v159=(function() return 0;end)();local v160=(function() return;end)();while true do if (0==v159) then v160=(function() return 0 -0 ;end)();while true do if (v160~=1) then else v121=(function() return 286 -(134 + 151) ;end)();break;end if (v160~=0) then else v122=(function() return 1665 -(970 + 695) ;end)();v123=(function() return nil;end)();v160=(function() return 1 -0 ;end)();end end break;end end end if (v121==1) then v124=(function() return nil;end)();v125=(function() return nil;end)();v121=(function() return 1992 -(582 + 1408) ;end)();end if (v121==2) then while true do if (v122== #"{") then local v176=(function() return 0 -0 ;end)();local v177=(function() return;end)();while true do if (v176==0) then v177=(function() return 0;end)();while true do if (1==v177) then v122=(function() return 2;end)();break;end if (0~=v177) then else v125=(function() return {v99(),v99(),nil,nil};end)();if (v123==(0 -0)) then local v183=(function() return 1824 -(1195 + 629) ;end)();local v184=(function() return;end)();while true do if (v183==0) then v184=(function() return 0 -0 ;end)();while true do if (v184==0) then v125[ #"nil"]=(function() return v99();end)();v125[ #"0836"]=(function() return v99();end)();break;end end break;end end elseif (v123== #",") then v125[ #"gha"]=(function() return v100();end)();elseif (v123==(243 -(187 + 54))) then v125[ #"-19"]=(function() return v100() -((782 -(162 + 618))^(12 + 4)) ;end)();elseif (v123== #"-19") then local v191=(function() return 0 + 0 ;end)();local v192=(function() return;end)();while true do if (0~=v191) then else v192=(function() return 0;end)();while true do if (v192==(0 -0)) then v125[ #"gha"]=(function() return v100() -((2 -0)^(2 + 14)) ;end)();v125[ #"?id="]=(function() return v99();end)();break;end end break;end end end v177=(function() return 1637 -(1373 + 263) ;end)();end end break;end end end if (v122== #"-19") then if (v98(v124, #"xxx", #"91(")== #"|") then v125[ #"asd1"]=(function() return v101[v125[ #"xnxx"]];end)();end v102[v103]=(function() return v125;end)();break;end if (0==v122) then local v179=(function() return 0;end)();while true do if (v179~=1) then else v122=(function() return  #"}";end)();break;end if (v179==(1000 -(451 + 549))) then v123=(function() return v98(v96,1 + 1 , #"xxx");end)();v124=(function() return v98(v96, #"asd1",9 -3 );end)();v179=(function() return 1 -0 ;end)();end end end if (v122==2) then local v180=(function() return 1384 -(746 + 638) ;end)();local v181=(function() return;end)();while true do if ((0 + 0)==v180) then v181=(function() return 0 -0 ;end)();while true do if (v181~=(341 -(218 + 123))) then else if (v98(v124, #"/", #"[")== #"<") then v125[1583 -(1535 + 46) ]=(function() return v101[v125[2 + 0 ]];end)();end if (v98(v124,1 + 1 ,562 -(306 + 254) )~= #"|") then else v125[ #"xxx"]=(function() return v101[v125[ #"gha"]];end)();end v181=(function() return 1;end)();end if (v181~=1) then else v122=(function() return  #"nil";end)();break;end end break;end end end end break;end end end break;end end return v95,v96,v97,v98,v99,v100,v101,v102,v103;end end end;end)();local v54=(function() return function(v105,v106,v107) local v108=(function() return 0;end)();local v109=(function() return;end)();while true do if (v108~=(0 + 0)) then else v109=(function() return 0 -0 ;end)();while true do if ((1467 -(899 + 568))==v109) then local v120=(function() return 0;end)();while true do if (v120==(0 + 0)) then v105[v106-#"<" ]=(function() return v107();end)();return v105,v106,v107;end end end end break;end end end;end)();local v55=(function() return {};end)();local v56=(function() return {};end)();local v57=(function() return {};end)();local v58=(function() return {v55,v56,nil,v57};end)();local v59=(function() return v23();end)();local v60=(function() return {};end)();for v70= #"{",v59 do local v71=(function() return 0;end)();local v72=(function() return;end)();local v73=(function() return;end)();local v74=(function() return;end)();while true do if (1==v71) then v74=(function() return nil;end)();while true do if (v72==(604 -(268 + 335))) then if (v73== #"{") then v74=(function() return v21()~=(290 -(60 + 230)) ;end)();elseif (v73==2) then v74=(function() return v24();end)();elseif (v73== #"xxx") then v74=(function() return v25();end)();end v60[v70]=(function() return v74;end)();break;end if (v72==(572 -(426 + 146))) then v73=(function() return v21();end)();v74=(function() return nil;end)();v72=(function() return 1 + 0 ;end)();end end break;end if (0==v71) then v72=(function() return 1456 -(282 + 1174) ;end)();v73=(function() return nil;end)();v71=(function() return 812 -(569 + 242) ;end)();end end end v58[ #"nil"]=(function() return v21();end)();for v75= #"}",v23() do FlatIdent_7366E,Descriptor,v21,v20,v22,v23,v60,v55,v75=(function() return v53(FlatIdent_7366E,Descriptor,v21,v20,v22,v23,v60,v55,v75);end)();end for v76= #">",v23() do v56,v76,v28=(function() return v54(v56,v76,v28);end)();end return v58;end local function v29(v62,v63,v64) local v65=v62[2 -1 ];local v66=v62[2];local v67=v62[1 + 2 ];return function(...) local v77=v65;local v78=v66;local v79=v67;local v80=v27;local v81=1025 -(706 + 318) ;local v82= -1;local v83={};local v84={...};local v85=v12("#",...) -(1272 -((1683 -(542 + 196)) + 326)) ;local v86={};local v87={};for v110=0 -0 ,v85 do if (v110>=v79) then v83[v110-v79 ]=v84[v110 + (1 -0) + 0 ];else v87[v110]=v84[v110 + (701 -(271 + 429)) ];end end local v88=(v85-v79) + 1 ;local v89;local v90;while true do v89=v77[v81];v90=v89[1];if ((v90<=7) or (2874<2181)) then if (v90<=3) then if ((v90<=(1 + 0)) or (2689<=343)) then if (v90>0) then local v126=1500 -(1408 + 92) ;local v127;local v128;while true do if ((v126==((318 + 768) -(461 + 625))) or (1869==2009)) then v127=v89[1290 -(993 + 295) ];v128=v87[v89[1 + 2 ]];v126=1172 -(418 + 753) ;end if ((1 + 0)==v126) then v87[v127 + 1 + 0 ]=v128;v87[v127]=v128[v89[2 + 2 ]];break;end end else v87[v89[1 + 1 ]]();end elseif (v90==(531 -(406 + 123))) then local v129=v89[1771 -(1749 + 20) ];v87[v129]=v87[v129](v13(v87,v129 + 1 + 0 + 0 ,v82));else v87[v89[1324 -(1249 + 73) ]]=v89[2 + 1 ];end elseif ((v90<=5) or (3546<2322)) then if (v90>4) then v87[v89[1147 -(466 + 679) ]]=v64[v89[6 -3 ]];else v87[v89[2]]=v89[(3 + 5) -5 ];end elseif (v90==(1906 -(106 + 1794))) then do return;end else v87[v89[1 + 1 ]]();end elseif (v90<=11) then if ((v90<=(3 + 6)) or (2082==4773)) then if (v90>(23 -15)) then local v137=0;local v138;local v139;local v140;local v141;while true do if (v137==((0 -0) -0)) then v138=v89[2];v139,v140=v80(v87[v138](v13(v87,v138 + (115 -((9 -5) + 110)) ,v89[587 -(57 + (2078 -(1126 + 425))) ])));v137=1428 -(41 + 1386) ;end if (v137==(104 -(17 + 86))) then v82=(v140 + v138) -1 ;v141=0 + 0 ;v137=3 -1 ;end if (v137==(5 -3)) then for v170=v138,v82 do v141=v141 + (167 -(122 + (449 -(118 + 287)))) ;v87[v170]=v139[v141];end break;end end else local v142=0 -0 ;local v143;local v144;local v145;local v146;while true do if (v142==(3 -2)) then v82=(v145 + v143) -(1 + 0) ;v146=0 + (0 -0) ;v142=3 -1 ;end if (v142==2) then for v173=v143,v82 do v146=v146 + (66 -(30 + 35)) ;v87[v173]=v144[v146];end break;end if (v142==(0 + 0)) then v143=v89[1259 -(1043 + (1335 -(118 + 1003))) ];v144,v145=v80(v87[v143](v13(v87,v143 + (3 -2) ,v89[1215 -(323 + 889) ])));v142=2 -1 ;end end end elseif ((3244>1055) and (v90>10)) then local v147=v89[582 -((1056 -695) + 219) ];v148=v87[v89[3]];v87[v147 + (321 -(53 + 267)) ]=v148;v87[v147]=v148[v89[1 + 3 ]];else v87[v89[415 -((392 -(142 + 235)) + 398) ]]={};end elseif ((v90<=13) or (3313<=1778)) then if ((v90>(994 -(18 + (4373 -3409)))) or (1421>=2104)) then local v153=0 -(0 + 0) ;local v154;while true do if (v153==(0 + 0)) then v154=v89[2];v87[v154]=v87[v154](v13(v87,v154 + 1 + 0 ,v82));break;end end else v87[v89[852 -(20 + (1807 -(553 + 424))) ]]=v64[v89[(5 -2) + 0 ]];end elseif (v90>((124 + 16) -(116 + 10))) then do return;end else v87[v89[2]]={};end v81=v81 + 1 + 0 ;end end;end return v29(v28(),{},v17)(...);end return v15("LOL!043Q00030A3Q006C6F6164737472696E6703043Q0067616D6503073Q00482Q747047657403B03Q00682Q7470733A2Q2F7261772E67697468756275736572636F6E74656E742E636F6D2F412Q626F75642D636F64652F412Q626F75642D4875622D667265642Q67792D6A68676A68622D666577646768696A6236646769766967756679642D647473742Q77797375696F3Q70676C706E70627062706869666963757879787978797868636A636A787478727A747A792D6B766F62706E702F726566732F68656164732F6D61696E2F524541444D452E6D6400094Q000E7Q00120C000100013Q00120C000200023Q002001000200020003001204000400044Q0008000200044Q000200013Q00022Q00070001000100012Q00063Q00017Q00",v9(),...);
+local LocalPlayer = Players.LocalPlayer
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+
+-- helper: choose best parent for executor GUIs (Delta/Synapse/etc)
+local function getGuiParent()
+    local ok, hidden = pcall(function() return gethui() end)
+    if ok and hidden then return hidden end
+    local ok2, cg = pcall(function() return CoreGui end)
+    if ok2 and cg then return cg end
+    return PlayerGui
+end
+local guiParent = getGuiParent()
+
+-- cleanup old
+pcall(function()
+    for _, n in ipairs({"ABODHub","ABODMini","ABODSplash"}) do
+        local old = guiParent:FindFirstChild(n)
+        if old then old:Destroy() end
+        local old2 = PlayerGui:FindFirstChild(n)
+        if old2 then old2:Destroy() end
+    end
+end)
+
+----------------------------------------------------------------
+-- إشعار فريق ABOD Hub – يظهر بعد دقيقتين من تشغيل السكربت
+----------------------------------------------------------------
+local function getAvatar(username)
+    local ok1, uid = pcall(function()
+        return Players:GetUserIdFromNameAsync(username)
+    end)
+    if not ok1 then return "" end
+    local ok2, url = pcall(function()
+        return Players:GetUserThumbnailAsync(uid, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420)
+    end)
+    return ok2 and url or ""
+end
+
+local function showTeamCard()
+    pcall(function()
+        local sg = Instance.new("ScreenGui")
+        sg.Name = "ABOD_TeamCard"
+        sg.DisplayOrder = 9999997
+        sg.IgnoreGuiInset = true
+        sg.ResetOnSpawn = false
+        pcall(function() sg.Parent = CoreGui end)
+        if not sg.Parent then sg.Parent = PlayerGui end
+
+        -- خلفية شفافة
+        local overlay = Instance.new("Frame", sg)
+        overlay.Size = UDim2.new(1, 0, 1, 0)
+        overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+        overlay.BackgroundTransparency = 0.5
+        overlay.BorderSizePixel = 0
+
+        -- البطاقة الرئيسية
+        local card = Instance.new("Frame", sg)
+        card.Size = UDim2.new(0, 340, 0, 0)
+        card.AnchorPoint = Vector2.new(0.5, 0.5)
+        card.Position = UDim2.new(0.5, 0, 0.65, 0)
+        card.BackgroundColor3 = Color3.fromRGB(5, 10, 20)
+        card.BackgroundTransparency = 0.05
+        card.BorderSizePixel = 0
+        card.AutomaticSize = Enum.AutomaticSize.Y
+        Instance.new("UICorner", card).CornerRadius = UDim.new(0, 18)
+        local stroke = Instance.new("UIStroke", card)
+        stroke.Color = Color3.fromRGB(0, 200, 255)
+        stroke.Thickness = 1.8
+        stroke.Transparency = 0.2
+
+        local pad = Instance.new("UIPadding", card)
+        pad.PaddingTop    = UDim.new(0, 16)
+        pad.PaddingBottom = UDim.new(0, 20)
+        pad.PaddingLeft   = UDim.new(0, 16)
+        pad.PaddingRight  = UDim.new(0, 16)
+
+        local layout = Instance.new("UIListLayout", card)
+        layout.Padding = UDim.new(0, 14)
+        layout.SortOrder = Enum.SortOrder.LayoutOrder
+        layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+        -- عنوان البطاقة
+        local title = Instance.new("TextLabel", card)
+        title.Size = UDim2.new(1, 0, 0, 26)
+        title.BackgroundTransparency = 1
+        title.Font = Enum.Font.GothamBold
+        title.Text = "✦ فريق ABOD Hub ✦"
+        title.TextSize = 17
+        title.TextColor3 = Color3.fromRGB(0, 210, 255)
+        title.TextXAlignment = Enum.TextXAlignment.Center
+        title.LayoutOrder = 1
+
+        -- فاصل
+        local div = Instance.new("Frame", card)
+        div.Size = UDim2.new(1, 0, 0, 1)
+        div.BackgroundColor3 = Color3.fromRGB(0, 180, 255)
+        div.BackgroundTransparency = 0.5
+        div.BorderSizePixel = 0
+        div.LayoutOrder = 2
+
+        -- دالة إنشاء بطاقة شخص
+        local function makePersonCard(username, roleText, order)
+            local avatarUrl = getAvatar(username)
+
+            local row = Instance.new("Frame", card)
+            row.Size = UDim2.new(1, 0, 0, 90)
+            row.BackgroundColor3 = Color3.fromRGB(10, 20, 35)
+            row.BackgroundTransparency = 0.3
+            row.BorderSizePixel = 0
+            row.LayoutOrder = order
+            Instance.new("UICorner", row).CornerRadius = UDim.new(0, 12)
+
+            -- الصورة
+            local img = Instance.new("ImageLabel", row)
+            img.Size = UDim2.new(0, 72, 0, 72)
+            img.Position = UDim2.new(0, 10, 0.5, -36)
+            img.BackgroundColor3 = Color3.fromRGB(20, 30, 50)
+            img.BorderSizePixel = 0
+            img.Image = avatarUrl
+            Instance.new("UICorner", img).CornerRadius = UDim.new(0, 36)
+            local imgStroke = Instance.new("UIStroke", img)
+            imgStroke.Color = Color3.fromRGB(0, 200, 255)
+            imgStroke.Thickness = 2
+            imgStroke.Transparency = 0.1
+
+            -- اسم الحساب
+            local nameLbl = Instance.new("TextLabel", row)
+            nameLbl.Size = UDim2.new(1, -96, 0, 32)
+            nameLbl.Position = UDim2.new(0, 90, 0.5, -30)
+            nameLbl.BackgroundTransparency = 1
+            nameLbl.Font = Enum.Font.GothamBold
+            nameLbl.Text = "@" .. username
+            nameLbl.TextSize = 14
+            nameLbl.TextColor3 = Color3.fromRGB(220, 240, 255)
+            nameLbl.TextXAlignment = Enum.TextXAlignment.Right
+
+            -- الدور
+            local roleLbl = Instance.new("TextLabel", row)
+            roleLbl.Size = UDim2.new(1, -96, 0, 28)
+            roleLbl.Position = UDim2.new(0, 90, 0.5, 4)
+            roleLbl.BackgroundTransparency = 1
+            roleLbl.Font = Enum.Font.GothamSemibold
+            roleLbl.Text = roleText
+            roleLbl.TextSize = 13
+            roleLbl.TextColor3 = Color3.fromRGB(0, 210, 255)
+            roleLbl.TextXAlignment = Enum.TextXAlignment.Right
+        end
+
+        -- المطور فقط
+        makePersonCard("yassin_3mk033", "👑 المطور عبود", 3)
+
+        -- زر إغلاق
+        local closeBtn = Instance.new("TextButton", card)
+        closeBtn.Size = UDim2.new(1, 0, 0, 34)
+        closeBtn.BackgroundColor3 = Color3.fromRGB(0, 140, 200)
+        closeBtn.BackgroundTransparency = 0.1
+        closeBtn.BorderSizePixel = 0
+        closeBtn.AutoButtonColor = false
+        closeBtn.Font = Enum.Font.GothamBold
+        closeBtn.Text = "حسناً 👍"
+        closeBtn.TextSize = 14
+        closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        closeBtn.LayoutOrder = 4
+        Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 10)
+        closeBtn.MouseEnter:Connect(function()
+            TweenService:Create(closeBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(0, 180, 255)}):Play()
+        end)
+        closeBtn.MouseLeave:Connect(function()
+            TweenService:Create(closeBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(0, 140, 200)}):Play()
+        end)
+
+        -- أنيميشن الظهور
+        card.BackgroundTransparency = 1
+        overlay.BackgroundTransparency = 1
+        TweenService:Create(overlay, TweenInfo.new(0.3), {BackgroundTransparency = 0.5}):Play()
+        TweenService:Create(card, TweenInfo.new(0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+            {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0.05}):Play()
+
+        local function closeCard()
+            TweenService:Create(card,    TweenInfo.new(0.25), {BackgroundTransparency = 1}):Play()
+            TweenService:Create(overlay, TweenInfo.new(0.25), {BackgroundTransparency = 1}):Play()
+            task.delay(0.28, function() pcall(function() sg:Destroy() end) end)
+        end
+
+        closeBtn.MouseButton1Click:Connect(closeCard)
+    end)
+end
+
+-- تشغيل الإشعار بعد دقيقتين
+task.delay(120, function()
+    showTeamCard()
+end)
+
+----------------------------------------------------------------
+-- Loading splash: ABOD Zero Protocol (hacker intro)
+----------------------------------------------------------------
+
+-- ─── نافذة "ما الجديد" تظهر بعد الإنترو ─────────────────────
+local function showWhatsNew()
+    local core = game:GetService("CoreGui")
+    local wsg = Instance.new("ScreenGui")
+    wsg.Name = "ABOD_WhatsNew"
+    wsg.DisplayOrder = 9999998
+    wsg.IgnoreGuiInset = true
+    wsg.ResetOnSpawn = false
+    wsg.Parent = core
+
+    -- خلفية شفافة داكنة
+    local overlay = Instance.new("Frame", wsg)
+    overlay.Size = UDim2.new(1, 0, 1, 0)
+    overlay.BackgroundColor3 = Color3.new(0, 0, 0)
+    overlay.BackgroundTransparency = 0.45
+    overlay.BorderSizePixel = 0
+
+    -- الإطار الرئيسي
+    local card = Instance.new("Frame", wsg)
+    card.Size = UDim2.new(0, 400, 0, 0)
+    card.AnchorPoint = Vector2.new(0.5, 0.5)
+    card.Position = UDim2.new(0.5, 0, 0.5, 0)
+    card.BackgroundColor3 = Color3.fromRGB(6, 18, 10)
+    card.BackgroundTransparency = 0.08
+    card.BorderSizePixel = 0
+    card.AutomaticSize = Enum.AutomaticSize.Y
+    Instance.new("UICorner", card).CornerRadius = UDim.new(0, 16)
+    local cs = Instance.new("UIStroke", card)
+    cs.Color = Color3.fromRGB(0, 230, 110); cs.Thickness = 1.8; cs.Transparency = 0.15
+
+    local cpad = Instance.new("UIPadding", card)
+    cpad.PaddingTop = UDim.new(0, 16); cpad.PaddingBottom = UDim.new(0, 18)
+    cpad.PaddingLeft = UDim.new(0, 18); cpad.PaddingRight = UDim.new(0, 18)
+
+    local layout = Instance.new("UIListLayout", card)
+    layout.Padding = UDim.new(0, 10)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    -- عنوان
+    local titleRow = Instance.new("Frame", card)
+    titleRow.Size = UDim2.new(1, 0, 0, 30)
+    titleRow.BackgroundTransparency = 1
+    titleRow.LayoutOrder = 1
+    local tLayout = Instance.new("UIListLayout", titleRow)
+    tLayout.FillDirection = Enum.FillDirection.Horizontal
+    tLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+    tLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+    local titleLbl = Instance.new("TextLabel", titleRow)
+    titleLbl.BackgroundTransparency = 1
+    titleLbl.Font = Enum.Font.GothamBold
+    titleLbl.Text = "✦ ما الجديد؟ ✦"
+    titleLbl.TextSize = 20
+    titleLbl.TextColor3 = Color3.fromRGB(0, 255, 130)
+    titleLbl.AutomaticSize = Enum.AutomaticSize.XY
+
+    -- فاصل
+    local divider = Instance.new("Frame", card)
+    divider.Size = UDim2.new(1, 0, 0, 1)
+    divider.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+    divider.BackgroundTransparency = 0.6
+    divider.BorderSizePixel = 0
+    divider.LayoutOrder = 2
+
+    -- النص الرئيسي
+    local bodyLines = {
+        "✦ التحديثات الجديدة ✦",
+        "",
+        "🔹 تم تغيير الإنترو إلى إنترو جديد",
+        "🔹 تم تغيير ريموت الشات في خانة النسخ",
+        "🔹 تم إضافة زرين في خانة النسخ:",
+        "   • اسم كامل — يرسل الأوامر بالاسم الكامل",
+        "   • ثلاث حروف — يرسل الأوامر بأول ٣ حروف فقط",
+        "🔹 تم حذف التايتال لان انتهت الثغرة",
+        "🔹 تم إضافة مراقبة الشات / تقليد الشات",
+        "",
+        "",
+        "",
+        "حسابي روب: yassin_3mk033~",
+    }
+
+    local bodyLbl = Instance.new("TextLabel", card)
+    bodyLbl.Size = UDim2.new(1, 0, 0, 0)
+    bodyLbl.AutomaticSize = Enum.AutomaticSize.Y
+    bodyLbl.BackgroundTransparency = 1
+    bodyLbl.Font = Enum.Font.GothamSemibold
+    bodyLbl.Text = table.concat(bodyLines, "\n")
+    bodyLbl.TextSize = 14
+    bodyLbl.TextColor3 = Color3.fromRGB(200, 245, 215)
+    bodyLbl.TextXAlignment = Enum.TextXAlignment.Right
+    bodyLbl.TextWrapped = true
+    bodyLbl.RichText = false
+    bodyLbl.LayoutOrder = 3
+
+    -- زر إغلاق
+    local closeBtn = Instance.new("TextButton", card)
+    closeBtn.Size = UDim2.new(1, 0, 0, 36)
+    closeBtn.BackgroundColor3 = Color3.fromRGB(0, 160, 70)
+    closeBtn.BackgroundTransparency = 0.1
+    closeBtn.BorderSizePixel = 0
+    closeBtn.AutoButtonColor = false
+    closeBtn.Font = Enum.Font.GothamBold
+    closeBtn.Text = "فاهمت، يلا نبدأ! 🚀"
+    closeBtn.TextSize = 15
+    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeBtn.LayoutOrder = 4
+    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 10)
+    closeBtn.MouseEnter:Connect(function()
+        TweenService:Create(closeBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(0, 210, 90)}):Play()
+    end)
+    closeBtn.MouseLeave:Connect(function()
+        TweenService:Create(closeBtn, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(0, 160, 70)}):Play()
+    end)
+
+    -- أنيميشن الظهور (AnchorPoint 0.5,0.5 → نبدأ من أسفل قليلاً)
+    card.Position = UDim2.new(0.5, 0, 0.65, 0)
+    card.BackgroundTransparency = 1
+    TweenService:Create(card, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+        {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0.08}):Play()
+
+    local closed = false
+    local function closeWhatsNew()
+        if closed then return end; closed = true
+        TweenService:Create(card, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+        TweenService:Create(overlay, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+        task.delay(0.22, function() pcall(function() wsg:Destroy() end) end)
+    end
+
+    closeBtn.MouseButton1Click:Connect(closeWhatsNew)
+end
+
+-- ─── الإنترو مع تخطي بالضغط مرتين ──────────────────────────
+local function runSplash()
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Shhd-code/Antro/refs/heads/main/README.md"))()
+    end)
+    task.delay(0.5, function()
+        showWhatsNew()
+    end)
+end
+pcall(runSplash)
+
+----------------------------------------------------------------
+-- Main GUI
+----------------------------------------------------------------
+local gui = Instance.new("ScreenGui")
+gui.Name = "ABODHub"; gui.ResetOnSpawn = false; gui.IgnoreGuiInset = true
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling; gui.DisplayOrder = 9000
+pcall(function() gui.Parent = guiParent end)
+if not gui.Parent then gui.Parent = PlayerGui end
+
+local main = Instance.new("Frame", gui)
+main.Name = "Main"; main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.Position = UDim2.new(0.5, 0, 0.5, 0); main.Size = UDim2.new(0, 520, 0, 360)
+main.BackgroundColor3 = Color3.fromRGB(6, 16, 9); main.BackgroundTransparency = 0.25
+main.BorderSizePixel = 0
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 14)
+local mStroke = Instance.new("UIStroke", main)
+mStroke.Color = Color3.fromRGB(0, 230, 110); mStroke.Thickness = 1.4; mStroke.Transparency = 0.25
+local mGradient = Instance.new("UIGradient", main)
+mGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(10, 30, 16)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(4, 12, 7)),
+}
+mGradient.Rotation = 135
+
+local glow = Instance.new("Frame", main)
+glow.BackgroundColor3 = Color3.fromRGB(0, 255, 130); glow.BorderSizePixel = 0
+glow.Size = UDim2.new(1, 0, 0, 2); glow.Position = UDim2.new(0, 0, 0, 44)
+local glowGrad = Instance.new("UIGradient", glow)
+glowGrad.Transparency = NumberSequence.new{
+    NumberSequenceKeypoint.new(0, 1),
+    NumberSequenceKeypoint.new(0.5, 0.2),
+    NumberSequenceKeypoint.new(1, 1),
+}
+task.spawn(function()
+    while glow.Parent do
+        glowGrad.Offset = Vector2.new(-1, 0)
+        TweenService:Create(glowGrad, TweenInfo.new(2.2, Enum.EasingStyle.Linear), {Offset = Vector2.new(1, 0)}):Play()
+        task.wait(2.2)
+    end
+end)
+
+local title = Instance.new("TextLabel", main)
+title.BackgroundTransparency = 1
+title.Size = UDim2.new(1, -90, 0, 44); title.Position = UDim2.new(0, 16, 0, 0)
+title.Font = Enum.Font.GothamBlack; title.Text = "ABOD + AB"
+title.TextSize = 22; title.TextColor3 = Color3.fromRGB(0, 255, 130)
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+----------------------------------------------------------------
+-- Top buttons (close X + minimize circle)
+----------------------------------------------------------------
+local closeBtn = Instance.new("TextButton", main)
+closeBtn.AnchorPoint = Vector2.new(1, 0)
+closeBtn.Position = UDim2.new(1, -8, 0, 8)
+closeBtn.Size = UDim2.new(0, 28, 0, 28)
+closeBtn.BackgroundColor3 = Color3.fromRGB(0, 60, 30)
+closeBtn.BackgroundTransparency = 0.3; closeBtn.BorderSizePixel = 0
+closeBtn.Text = "X"; closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextColor3 = Color3.fromRGB(180, 255, 200); closeBtn.TextSize = 16
+closeBtn.AutoButtonColor = false
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
+local closeStroke = Instance.new("UIStroke", closeBtn)
+closeStroke.Color = Color3.fromRGB(0, 200, 100); closeStroke.Transparency = 0.4
+closeBtn.MouseEnter:Connect(function() TweenService:Create(closeBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.1}):Play() end)
+closeBtn.MouseLeave:Connect(function() TweenService:Create(closeBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.3}):Play() end)
+
+-- circle minimize
+local minBtn = Instance.new("TextButton", main)
+minBtn.AnchorPoint = Vector2.new(1, 0)
+minBtn.Position = UDim2.new(1, -44, 0, 8)
+minBtn.Size = UDim2.new(0, 28, 0, 28)
+minBtn.BackgroundColor3 = Color3.fromRGB(0, 90, 45)
+minBtn.BackgroundTransparency = 0.2; minBtn.BorderSizePixel = 0
+minBtn.Text = ""; minBtn.AutoButtonColor = false
+Instance.new("UICorner", minBtn).CornerRadius = UDim.new(1, 0) -- full circle
+local minStroke = Instance.new("UIStroke", minBtn)
+minStroke.Color = Color3.fromRGB(0, 255, 130); minStroke.Transparency = 0.2; minStroke.Thickness = 1.4
+minBtn.MouseEnter:Connect(function() TweenService:Create(minBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0}):Play() end)
+minBtn.MouseLeave:Connect(function() TweenService:Create(minBtn, TweenInfo.new(0.15), {BackgroundTransparency = 0.2}):Play() end)
+
+----------------------------------------------------------------
+-- Floating mini circle (when hidden)
+----------------------------------------------------------------
+local miniGui = Instance.new("ScreenGui")
+miniGui.Name = "ABODMini"; miniGui.ResetOnSpawn = false; miniGui.IgnoreGuiInset = true
+miniGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling; miniGui.DisplayOrder = 9001
+pcall(function() miniGui.Parent = guiParent end)
+if not miniGui.Parent then miniGui.Parent = PlayerGui end
+
+local miniBubble = Instance.new("TextButton", miniGui)
+miniBubble.AnchorPoint = Vector2.new(0, 0.5)
+miniBubble.Position = UDim2.new(0, 16, 0.5, 0)
+miniBubble.Size = UDim2.new(0, 44, 0, 44)
+miniBubble.BackgroundColor3 = Color3.fromRGB(0, 110, 55)
+miniBubble.BackgroundTransparency = 0.15; miniBubble.BorderSizePixel = 0
+miniBubble.AutoButtonColor = false
+miniBubble.Text = "ABOD"
+miniBubble.Font = Enum.Font.GothamBlack
+miniBubble.TextSize = 14
+miniBubble.TextColor3 = Color3.fromRGB(230, 255, 240)
+miniBubble.Visible = false
+Instance.new("UICorner", miniBubble).CornerRadius = UDim.new(1, 0)
+local miniStroke = Instance.new("UIStroke", miniBubble)
+miniStroke.Color = Color3.fromRGB(0, 255, 130); miniStroke.Thickness = 1.6; miniStroke.Transparency = 0.2
+
+-- pulse
+task.spawn(function()
+    while miniGui.Parent do
+        if miniBubble.Visible then
+            TweenService:Create(miniStroke, TweenInfo.new(0.7), {Transparency = 0.7}):Play(); task.wait(0.7)
+            TweenService:Create(miniStroke, TweenInfo.new(0.7), {Transparency = 0.15}):Play(); task.wait(0.7)
+        else
+            task.wait(0.2)
+        end
+    end
+end)
+
+-- mini bubble stays ALWAYS visible. clicking it toggles the main panel.
+miniBubble.Visible = true
+
+local function setHidden(hidden)
+    if hidden then
+        TweenService:Create(main, TweenInfo.new(0.2), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
+        task.wait(0.22)
+        main.Visible = false
+        main.Size = UDim2.new(0, 520, 0, 360)
+        main.BackgroundTransparency = 0.25
+    else
+        main.Visible = true
+        main.Size = UDim2.new(0, 0, 0, 0)
+        main.BackgroundTransparency = 1
+        TweenService:Create(main, TweenInfo.new(0.25, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(0, 520, 0, 360), BackgroundTransparency = 0.25}):Play()
+    end
+end
+
+minBtn.MouseButton1Click:Connect(function() setHidden(true) end)
+miniBubble.MouseButton1Click:Connect(function()
+    setHidden(main.Visible)
+end)
+
+closeBtn.MouseButton1Click:Connect(function()
+    TweenService:Create(main, TweenInfo.new(0.2), {Size = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1}):Play()
+    task.wait(0.22); gui:Destroy(); miniGui:Destroy()
+end)
+
+----------------------------------------------------------------
+-- Drag main + mini
+----------------------------------------------------------------
+local function makeDraggable(handle, target)
+    local dragging, dragStart, startPos
+    handle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true; dragStart = input.Position; startPos = target.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            target.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+makeDraggable(title, main)
+makeDraggable(miniBubble, miniBubble)
+
+----------------------------------------------------------------
+-- Tab bar
+----------------------------------------------------------------
+local tabBar = Instance.new("Frame", main)
+tabBar.BackgroundTransparency = 1
+tabBar.Position = UDim2.new(0, 16, 0, 56); tabBar.Size = UDim2.new(1, -32, 0, 36)
+local tabLayout = Instance.new("UIListLayout", tabBar)
+tabLayout.FillDirection = Enum.FillDirection.Horizontal; tabLayout.Padding = UDim.new(0, 8)
+
+local pages, tabButtons = {}, {}
+
+local function makeTab(name)
+    local btn = Instance.new("TextButton", tabBar)
+    btn.Size = UDim2.new(0, 130, 1, 0); btn.BackgroundColor3 = Color3.fromRGB(8, 30, 14)
+    btn.BackgroundTransparency = 0.4; btn.BorderSizePixel = 0; btn.AutoButtonColor = false
+    btn.Font = Enum.Font.GothamBold; btn.Text = name; btn.TextSize = 15
+    btn.TextColor3 = Color3.fromRGB(160, 230, 180)
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 10)
+    local s = Instance.new("UIStroke", btn); s.Color = Color3.fromRGB(0, 200, 100); s.Transparency = 0.6
+
+    local page = Instance.new("Frame", main)
+    page.Position = UDim2.new(0, 16, 0, 100); page.Size = UDim2.new(1, -32, 1, -116)
+    page.BackgroundColor3 = Color3.fromRGB(4, 12, 7); page.BackgroundTransparency = 0.4
+    page.BorderSizePixel = 0; page.Visible = false
+    Instance.new("UICorner", page).CornerRadius = UDim.new(0, 10)
+    local ps = Instance.new("UIStroke", page); ps.Color = Color3.fromRGB(0, 180, 90); ps.Transparency = 0.7
+
+    pages[name] = page; tabButtons[name] = btn
+    btn.MouseButton1Click:Connect(function()
+        for n, p in pairs(pages) do p.Visible = (n == name) end
+        for n, b in pairs(tabButtons) do
+            if n == name then
+                TweenService:Create(b, TweenInfo.new(0.15), {BackgroundTransparency = 0.1, TextColor3 = Color3.fromRGB(0, 255, 130)}):Play()
+            else
+                TweenService:Create(b, TweenInfo.new(0.15), {BackgroundTransparency = 0.4, TextColor3 = Color3.fromRGB(160, 230, 180)}):Play()
+            end
+        end
+    end)
+    return page, btn
+end
+
+local copyPage    = makeTab("نسخ")
+local controlPage = makeTab("تحكم")
+local extraPage   = makeTab("سبام اكسترا")
+
+----------------------------------------------------------------
+-- Page: نسخ
+----------------------------------------------------------------
+local selectedName = nil
+local nameMode   = "full"  -- "full" | "three"
+local silentMode = false    -- true = أدمن فقط بدون شات
+
+local function getEffectiveName()
+    if not selectedName then return nil end
+    if nameMode == "three" then
+        return selectedName:sub(1, 3)
+    end
+    return selectedName
+end
+
+local playersBar = Instance.new("ScrollingFrame", copyPage)
+playersBar.Position = UDim2.new(0, 10, 0, 10); playersBar.Size = UDim2.new(1, -20, 0, 46)
+playersBar.BackgroundColor3 = Color3.fromRGB(2, 10, 5); playersBar.BackgroundTransparency = 0.5
+playersBar.BorderSizePixel = 0; playersBar.ScrollBarThickness = 3
+playersBar.ScrollingDirection = Enum.ScrollingDirection.X
+playersBar.AutomaticCanvasSize = Enum.AutomaticSize.X
+playersBar.CanvasSize = UDim2.new(0, 0, 0, 0)
+playersBar.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 130)
+Instance.new("UICorner", playersBar).CornerRadius = UDim.new(0, 8)
+local pbLayout = Instance.new("UIListLayout", playersBar)
+pbLayout.FillDirection = Enum.FillDirection.Horizontal; pbLayout.Padding = UDim.new(0, 6)
+pbLayout.SortOrder = Enum.SortOrder.LayoutOrder; pbLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+local pbPad = Instance.new("UIPadding", playersBar)
+pbPad.PaddingLeft = UDim.new(0, 8); pbPad.PaddingRight = UDim.new(0, 8)
+
+local selectedLabel = Instance.new("TextLabel", copyPage)
+selectedLabel.BackgroundTransparency = 1
+selectedLabel.Position = UDim2.new(0, 10, 0, 60); selectedLabel.Size = UDim2.new(1, -20, 0, 20)
+selectedLabel.Font = Enum.Font.GothamSemibold; selectedLabel.TextSize = 13
+selectedLabel.TextColor3 = Color3.fromRGB(180, 255, 200)
+selectedLabel.TextXAlignment = Enum.TextXAlignment.Left
+selectedLabel.Text = "اختر لاعب من القائمة"
+
+local playerChips = {}
+local function refreshPlayers()
+    for _, c in ipairs(playersBar:GetChildren()) do
+        if c:IsA("TextButton") then c:Destroy() end
+    end
+    playerChips = {}
+    for _, p in ipairs(Players:GetPlayers()) do
+        if p ~= LocalPlayer then
+            local chip = Instance.new("TextButton", playersBar)
+            chip.Size = UDim2.new(0, 0, 1, -8); chip.AutomaticSize = Enum.AutomaticSize.X
+            chip.BackgroundColor3 = Color3.fromRGB(10, 35, 18); chip.BackgroundTransparency = 0.2
+            chip.BorderSizePixel = 0; chip.AutoButtonColor = false
+            chip.Font = Enum.Font.GothamBold; chip.Text = "  " .. p.Name .. "  "
+            chip.TextSize = 13; chip.TextColor3 = Color3.fromRGB(200, 255, 215)
+            Instance.new("UICorner", chip).CornerRadius = UDim.new(0, 8)
+            local cs = Instance.new("UIStroke", chip); cs.Color = Color3.fromRGB(0, 200, 100); cs.Transparency = 0.5
+            chip.MouseButton1Click:Connect(function()
+                selectedName = p.Name
+                selectedLabel.Text = "تم اختيار: " .. p.Name
+                for _, ch in pairs(playerChips) do
+                    TweenService:Create(ch, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(10, 35, 18)}):Play()
+                end
+                TweenService:Create(chip, TweenInfo.new(0.12), {BackgroundColor3 = Color3.fromRGB(0, 120, 60)}):Play()
+            end)
+            chip.MouseEnter:Connect(function()
+                if selectedName ~= p.Name then
+                    TweenService:Create(chip, TweenInfo.new(0.12), {BackgroundTransparency = 0.05}):Play()
+                end
+            end)
+            chip.MouseLeave:Connect(function()
+                if selectedName ~= p.Name then
+                    TweenService:Create(chip, TweenInfo.new(0.12), {BackgroundTransparency = 0.2}):Play()
+                end
+            end)
+            playerChips[p.Name] = chip
+        end
+    end
+end
+refreshPlayers()
+Players.PlayerAdded:Connect(refreshPlayers)
+Players.PlayerRemoving:Connect(refreshPlayers)
+
+local function makeBigBtn(parent, text, posY, color1, color2)
+    color1 = color1 or Color3.fromRGB(0, 150, 75)
+    color2 = color2 or Color3.fromRGB(0, 90, 45)
+    local b = Instance.new("TextButton", parent)
+    b.Position = UDim2.new(0, 10, 0, posY); b.Size = UDim2.new(1, -20, 0, 46)
+    b.BackgroundColor3 = Color3.fromRGB(0, 110, 55); b.BackgroundTransparency = 0.15
+    b.BorderSizePixel = 0; b.AutoButtonColor = false
+    b.Font = Enum.Font.GothamBlack; b.Text = text; b.TextSize = 16
+    b.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Instance.new("UICorner", b).CornerRadius = UDim.new(0, 10)
+    local s = Instance.new("UIStroke", b); s.Color = Color3.fromRGB(0, 255, 130); s.Transparency = 0.3
+    local g = Instance.new("UIGradient", b)
+    g.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, color1),
+        ColorSequenceKeypoint.new(1, color2),
+    }
+    g.Rotation = 90
+    b.MouseEnter:Connect(function() TweenService:Create(b, TweenInfo.new(0.15), {BackgroundTransparency = 0}):Play() end)
+    b.MouseLeave:Connect(function() TweenService:Create(b, TweenInfo.new(0.15), {BackgroundTransparency = 0.15}):Play() end)
+    return b
+end
+
+-- ┌─────────────────────────────────────────────────────────┐
+-- │  ScrollingFrame لخانة النسخ - يمنع خروج الأزرار        │
+-- └─────────────────────────────────────────────────────────┘
+local spamScroll = Instance.new("ScrollingFrame", copyPage)
+spamScroll.Position = UDim2.new(0, 0, 0, 82)
+spamScroll.Size = UDim2.new(1, 0, 1, -112)
+spamScroll.BackgroundTransparency = 1
+spamScroll.BorderSizePixel = 0
+spamScroll.ScrollBarThickness = 4
+spamScroll.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 130)
+spamScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+spamScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+local spamList = Instance.new("UIListLayout", spamScroll)
+spamList.Padding = UDim.new(0, 6)
+spamList.SortOrder = Enum.SortOrder.LayoutOrder
+local spamPad = Instance.new("UIPadding", spamScroll)
+spamPad.PaddingTop = UDim.new(0, 6)
+spamPad.PaddingBottom = UDim.new(0, 6)
+spamPad.PaddingLeft = UDim.new(0, 8)
+spamPad.PaddingRight = UDim.new(0, 8)
+
+-- حقل علامة الأدمن
+local prefixRow = Instance.new("Frame", spamScroll)
+prefixRow.BackgroundTransparency = 1
+prefixRow.Size = UDim2.new(1, 0, 0, 36)
+prefixRow.LayoutOrder = 0
+
+local prefixBox = Instance.new("TextBox", prefixRow)
+prefixBox.Size = UDim2.new(0, 48, 1, 0); prefixBox.Position = UDim2.new(0, 0, 0, 0)
+prefixBox.BackgroundColor3 = Color3.fromRGB(20, 80, 180); prefixBox.BackgroundTransparency = 0.15
+prefixBox.BorderSizePixel = 0; prefixBox.Text = ";"
+prefixBox.PlaceholderText = ";"
+prefixBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+prefixBox.Font = Enum.Font.GothamBold; prefixBox.TextSize = 18
+prefixBox.ClearTextOnFocus = false
+Instance.new("UICorner", prefixBox).CornerRadius = UDim.new(0, 8)
+local pbStroke = Instance.new("UIStroke", prefixBox)
+pbStroke.Color = Color3.fromRGB(80, 160, 255); pbStroke.Thickness = 1.5; pbStroke.Transparency = 0.2
+
+local prefixLabel = Instance.new("TextLabel", prefixRow)
+prefixLabel.BackgroundTransparency = 1
+prefixLabel.Position = UDim2.new(0, 56, 0, 0); prefixLabel.Size = UDim2.new(1, -56, 1, 0)
+prefixLabel.Font = Enum.Font.GothamSemibold; prefixLabel.TextSize = 13
+prefixLabel.TextColor3 = Color3.fromRGB(160, 210, 255)
+prefixLabel.TextXAlignment = Enum.TextXAlignment.Left
+prefixLabel.Text = "اكتب علامة الادمن الخاصة بك"
+
+-- ┌─────────────────────────────────────────────────────────┐
+-- │  زرا وضع الاسم: اسم كامل / ثلاث حروف                   │
+-- └─────────────────────────────────────────────────────────┘
+local nameModeRow = Instance.new("Frame", spamScroll)
+nameModeRow.BackgroundTransparency = 1
+nameModeRow.Size = UDim2.new(1, 0, 0, 34)
+nameModeRow.LayoutOrder = 1
+
+local fullNameBtn = Instance.new("TextButton", nameModeRow)
+fullNameBtn.Size = UDim2.new(0.5, -4, 1, 0)
+fullNameBtn.Position = UDim2.new(0, 0, 0, 0)
+fullNameBtn.BackgroundColor3 = Color3.fromRGB(0, 160, 80)
+fullNameBtn.BackgroundTransparency = 0.1
+fullNameBtn.BorderSizePixel = 0
+fullNameBtn.AutoButtonColor = false
+fullNameBtn.Font = Enum.Font.GothamBold
+fullNameBtn.Text = "اسم كامل"
+fullNameBtn.TextSize = 14
+fullNameBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+Instance.new("UICorner", fullNameBtn).CornerRadius = UDim.new(0, 9)
+local fnStroke = Inst
