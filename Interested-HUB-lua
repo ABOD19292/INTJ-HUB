@@ -23,8 +23,8 @@ ToggleButton.Parent = ScreenGui
 -- Main Frame
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 320, 0, 450)
-MainFrame.Position = UDim2.new(0.5, -160, 0.5, -225)
+MainFrame.Size = UDim2.new(0, 320, 0, 420)
+MainFrame.Position = UDim2.new(0.5, -160, 0.5, -210)
 MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 MainFrame.Visible = false
 MainFrame.Draggable = true
@@ -36,7 +36,7 @@ Title.Size = UDim2.new(1, 0, 0, 40)
 Title.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 16
-Title.Text = "لوحة الأوامر السريعة"
+Title.Text = "لوحة تجهيز النسخ المتسلسلة"
 Title.Parent = MainFrame
 
 -- Target Name TextBox (لتحديد الشخص)
@@ -50,87 +50,74 @@ TargetBox.Text = ""
 TargetBox.TextSize = 14
 TargetBox.Parent = MainFrame
 
--- Subtitle / Instruction
+-- Copy All Commands Button (زر نسخ الأوامر المتسلسلة كاملة)
+local CopyAllCmdsButton = Instance.new("TextButton")
+CopyAllCmdsButton.Size = UDim2.new(0.9, 0, 0, 70)
+CopyAllCmdsButton.Position = UDim2.new(0.05, 0, 0, 100)
+CopyAllCmdsButton.BackgroundColor3 = Color3.fromRGB(50, 120, 50)
+CopyAllCmdsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CopyAllCmdsButton.TextSize = 13
+CopyAllCmdsButton.TextWrapped = true
+CopyAllCmdsButton.Text = "نسخ جميع الأوامر المتسلسلة دفعة واحدة"
+CopyAllCmdsButton.Parent = MainFrame
+
+-- Subtitle / Instruction for Res All
 local Subtitle = Instance.new("TextLabel")
 Subtitle.Size = UDim2.new(1, 0, 0, 25)
-Subtitle.Position = UDim2.new(0, 0, 0, 90)
+Subtitle.Position = UDim2.new(0, 0, 0, 190)
 Subtitle.BackgroundTransparency = 1
 Subtitle.TextColor3 = Color3.fromRGB(200, 200, 200)
 Subtitle.TextSize = 12
-Subtitle.Text = "اضغط لنسخ الأوامر:"
+Subtitle.Text = "أوامر إعادة التعيين للجميع:"
 Subtitle.Parent = MainFrame
-
--- ScrollingFrame for Commands
-local ScrollingFrame = Instance.new("ScrollingFrame")
-ScrollingFrame.Size = UDim2.new(0.9, 0, 0, 200)
-ScrollingFrame.Position = UDim2.new(0.05, 0, 0, 120)
-ScrollingFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-ScrollingFrame.Parent = MainFrame
-
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Parent = ScrollingFrame
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 5)
 
 -- Res All Button (لعمل res لكل اليوزرات أول حرفين)
 local ResAllButton = Instance.new("TextButton")
-ResAllButton.Size = UDim2.new(0.9, 0, 0, 40)
-ResAllButton.Position = UDim2.new(0.05, 0, 0, 335)
+ResAllButton.Size = UDim2.new(0.9, 0, 0, 50)
+ResAllButton.Position = UDim2.new(0.05, 0, 0, 220)
 ResAllButton.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
 ResAllButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ResAllButton.TextSize = 14
-ResAllButton.Text = ";res [جميع اللاعبين]"
+ResAllButton.TextSize = 13
+ResAllButton.TextWrapped = true
+ResAllButton.Text = ";res [الكل]"
 ResAllButton.Parent = MainFrame
 
--- List of commands template
-local baseCommands = {
+-- قائمة الأوامر الأصلية التي طلبتها
+local rawCommands = {
     "/AP SA", "/INF", "/JAIL SA", "/ICE SA", "/KILL SA", "/RESPAWN SA", 
     "/CMDBAR SA", "/LOGS SA", "/CLOGS SA", "/FLING SA", "/REFRESH SA", 
     "/FIRE SA", "/TELEPORT SA", "/HANDTO SA", "/BOX SA", "/DOG SA", 
     "/WORM SA", "/CHIBIFY SA", "/PLUSHIFY SA", "/FREAKY SA", "/FROGLY SA", 
     "/BIGIFY SA", "/DINOFY SA", "/FATIFY SA", "/GHOST SA", "/SQUASH SA", 
     "/FAT SA", "/THIN SA", "/GIANTDWARF SA", "/DWARF SA", "/HEADSIZE SA", 
-    "/BODYTYPESCALE SA", "/DEPTH SA", "/POTATOHEAD SA"
+    localPlayer, "/BODYTYPESCALE SA", "/DEPTH SA", "/POTATOHEAD SA"
 }
 
--- Function to update commands and buttons based on target input
-local function updateCommands()
-    -- Clear old command buttons
-    for _, child in ipairs(ScrollingFrame:GetChildren()) do
-        if child:IsA("TextButton") then
-            child:Destroy()
-        end
-    end
-
+-- دالة لتحديث النصوص والروابط تلقائياً
+local function updateData()
     local saInput = TargetBox.Text:lower()
     
-    -- Build individual command buttons
-    for i, cmd in ipairs(baseCommands) do
+    -- 1. دمج الأوامر كلها ببعضها مع استبدال SA
+    local compiledCmds = {}
+    for _, cmd in ipairs(rawCommands) do
         local finalCmd = string.gsub(cmd, "SA", saInput)
-        
-        local cmdButton = Instance.new("TextButton")
-        cmdButton.Size = UDim2.new(1, -10, 0, 30)
-        cmdButton.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-        cmdButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        cmdButton.TextSize = 12
-        cmdButton.Text = finalCmd
-        cmdButton.Parent = ScrollingFrame
-        
-        -- Copy to clipboard on click
-        cmdButton.MouseButton1Click:Connect(function()
-            if setclipboard then
-                setclipboard(finalCmd)
-                cmdButton.Text = "تم النسخ! ✓"
-                task.wait(1)
-                cmdButton.Text = finalCmd
-            end
-        end)
+        table.insert(compiledCmds, finalCmd)
     end
     
-    ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+    local fullString = table.concat(compiledCmds, " ")
+    CopyAllCmdsButton.Text = "نسخ الأوامر المتسلسلة:\n" .. fullString
 
-    -- Build Res All string (First 2 letters of each player)
+    -- تخزين النص المؤقت للنسخ
+    CopyAllCmdsButton.MouseButton1Click:Once(function()
+        if setclipboard then
+            setclipboard(fullString)
+            CopyAllCmdsButton.Text = "تم نسخ جميع الأوامر بنجاح! ✓"
+            task.wait(1.5)
+            updateData()
+        end
+    end)
+
+    -- 2. تجهيز زر res للجميع (أول حرفين)
     local abbreviations = {}
     for _, player in ipairs(Players:GetPlayers()) do
         local pName = player.Name
@@ -142,21 +129,31 @@ local function updateCommands()
     end
     
     local resString = ";res " .. table.concat(abbreviations, ",")
-    ResAllButton.Text = resString
+    ResAllButton.Text = "نسخ الأوامر للجميع:\n" .. resString
 end
 
-TargetBox:GetPropertyChangedSignal("Text"):Connect(updateCommands)
-Players.PlayerAdded:Connect(updateCommands)
-Players.PlayerRemoving:Connect(updateCommands)
+TargetBox:GetPropertyChangedSignal("Text"):Connect(updateData)
+Players.PlayerAdded:Connect(updateData)
+Players.PlayerRemoving:Connect(updateData)
 
 -- Copy Res All string on click
 ResAllButton.MouseButton1Click:Connect(function()
+    local abbreviations = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        local pName = player.Name
+        if #pName >= 2 then
+            table.insert(abbreviations, string.lower(string.sub(pName, 1, 2)))
+        else
+            table.insert(abbreviations, string.lower(pName))
+        end
+    end
+    local resString = ";res " .. table.concat(abbreviations, ",")
+    
     if setclipboard then
-        setclipboard(ResAllButton.Text)
-        local old = ResAllButton.Text
-        ResAllButton.Text = "تم نسخ الكل! ✓"
-        task.wait(1)
-        ResAllButton.Text = old
+        setclipboard(resString)
+        ResAllButton.Text = "تم نسخ ريس الكل! ✓"
+        task.wait(1.5)
+        updateData()
     end
 end)
 
@@ -166,4 +163,4 @@ ToggleButton.MouseButton1Click:Connect(function()
 end)
 
 -- Initial load
-updateCommands()
+updateData()
